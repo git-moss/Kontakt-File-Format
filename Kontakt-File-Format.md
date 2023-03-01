@@ -1,7 +1,8 @@
 # Kontakt File Format(s)
 
-TODO = Not looked into yet or simply no idea
-TBC  = Good guess but not confirmed yet
+**TODO** = Not looked into yet or simply no idea
+
+**TBC**  = Good guess but not confirmed yet
 
 Each file format starts with a fixed 32 bit identifier (ID).
 
