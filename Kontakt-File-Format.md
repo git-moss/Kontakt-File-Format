@@ -1,12 +1,16 @@
 # Kontakt File Format(s)
 
-**TODO** = Not looked into yet or simply no idea
+## Abbreviations
 
-**TBC**  = Good guess but not confirmed yet
-
-Each file format starts with a fixed 32 bit identifier (ID).
+| Abbreviation | Meaning                               |
+|:-------------|:--------------------------------------|
+| **TODO**     | Not looked into yet or simply no idea |
+| **TBC**      | Good guess but not confirmed yet      |
+| **V**        | Variable length                       |
 
 ## File IDs
+
+Each file starts with a fixed 32 bit identifier (ID) which defines the main file structure (format).
 
 | Bytes         | Format                   | File Ending |
 |:--------------|:-------------------------|:------------|
@@ -21,7 +25,7 @@ Each file format starts with a fixed 32 bit identifier (ID).
 | :-------|:-----------|:----------------------------------------|
 | 4       | File ID    | Identifies the type of the file format. |
 | 4       | ZLIB Start | The number of bytes in the file where the ZLIB starts. **TBC** |
-| X       | **TODO**   | **TODO** |
+| V       | **TODO**   | **TODO** |
 
 ## Kontakt 2 - 4.2
 
@@ -42,9 +46,9 @@ Each file format starts with a fixed 32 bit identifier (ID).
 | **TODO**| Web Link   | A URL to the website of the creator.          |
 | **TODO**| **TODO**   | **TODO**                                      |
 | 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value in reverse order. |
-| X       | Inst. data | XML document with all the data of the instrument, ZLIB encoded. |
+| V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded. |
 |         | **TODO**   | **TBC** check if there is anything more here  |
-| Y       | Soundinfo  | Soundinfo block (only Kontakt 4).             |
+| V       | Soundinfo  | Soundinfo block (only Kontakt 4).             |
 
 - There is a checksum in there
 - The Instrument Options dialog in Kontakt contains several settings which might be in there
@@ -114,10 +118,12 @@ The following tags are known:
     attributes := attribute
     attribute := value
 
-| XML Tag       | Description              |
-|:--------------|:------------------|
+| XML Tag       | Description                        |
+|:--------------|:-----------------------------------|
 | name          | The name of the instrument         |
 | author        | The author of the instrument       |
+| bank          | A name to group some instruments   |
+| value         | A tag to categorize the instrument |
 
 Example:
 
