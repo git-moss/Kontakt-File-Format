@@ -15,7 +15,7 @@
 | 4       | File ID    | 5E E5 6E B3 - Identifies the Kontakt 1 file format.             |
 | 4       | ZLIB Start | The number of bytes in the file where the ZLIB starts. **TBC**  |
 | 28 **TBC** | **TODO**   | **TODO**                                                     |
-| V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded. Each tag is on one line, indentation with 2 spaces. |
+| V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded with Compression Level 2. Each tag is on one line, indentation with 2 spaces. |
 
 ## Kontakt 2 - 4.1.x
 
@@ -25,8 +25,7 @@
 | :-------|:-----------|:------------------------------------------------------------------|
 | 4       | File ID    | 12 90 A8 7F - Identifies the Kontakt 2 file format.               |
 | 12      | **TODO**   | **TODO**                                                          |
-| 4       | Version    | Version of Kontakt which created the file in reverse order.       |
-|         |            | E.g. "02 01 00 02" is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
+| 4       | Version    | Version of Kontakt which created the file in reverse order. E.g. "02 01 00 02" is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
 | 4       | Block ID   | Type of the following file format.                                |
 | 4       | Timestamp  | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" is 1298402059 is "22.02.2011 20:14:19" |
 | 26      | **TODO**   | **TODO**                                                          |
