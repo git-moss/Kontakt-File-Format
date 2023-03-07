@@ -38,7 +38,7 @@
 | 86      | Web Link   | A URL to the website of the creator. Null terminated UTF-8.       |
 | 7       | **TODO**   | **TODO**                                                          |
 | 4       | **TODO**   | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level |
-| 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value in reverse order. |
+| 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value (big-endian)).    |
 | V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded. Each tag is on one line, no indentation. |
 | 12      | **TODO**   | **TODO**                                                          |
 | V       | Soundinfo  | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database. |
@@ -56,7 +56,7 @@
 | 12      | **TODO**   | **TODO** - 12 mnore bytes introduced in 4.2                       |
 | 7       | **TODO**   | **TODO**                                                          |
 | 4       | **TODO**   | **TODO**   Length of ZLIB or checksum?!                           |
-| 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value in reverse order. |
+| 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value (big-endian).     |
 | V       | Inst. data | **TODO**                                                          |
 | 12      | **TODO**   | **TODO**                                                          |
 | V       | Soundinfo  | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database. |
@@ -115,5 +115,6 @@ There are 29 icons.
 |:-----------------|:------------------|
 | 2noK             | Kontakt 2         |
 | Kon3             | Kontakt 3         |
+| 3noK             | Kontakt 3         |
 | 4noK		       | Kontakt 4         |
-| iPkA             | Kontakt 3 Library **TBC** |
+| iPkA             | Akustik Piano from Kontakt 3 Library |
