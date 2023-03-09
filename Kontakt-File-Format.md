@@ -1,5 +1,24 @@
 # Kontakt File Format(s)
 
+| File Ending    | Since | Content                                                                            |
+|:---------------|:------|------------------------------------------------------------------------------------|
+| **.nki**       | 1.0   | *Native Instruments Kontakt Instrument*. It contains one Instrument. It can 
+                           also optionally contain the samples the .nki refers to; this is called a 
+                           *monolith* file.                                                                   |
+| **.nkb**       | 1.0   | *Native Instruments Kontakt Bank*. Groups several instruments as a bank which 
+                           can be addressed with different MIDI channels and program changes.                 |
+| **.nkm**       | 1.0   | *Native Instruments Multi*. Contains multiple .nki's (up to 64) and .nkb's.        |
+| **.nkp**       | ?     | *Native Instruments Kontakt Preset*.                                               |
+| **.nkg**       | ?     | The information of about a Kontakt Group (can be ex-/imported from the groups 
+                           area in Kontakt).                                                                  |
+| **.ncw**       | ?     | A lossless compressed sample. Can be un-/compressed with the Kontakt Batch Compress
+                           dialog.                                                                            |
+| **.nkc**       | ?     | Kontakt Cache File. Libraries are downloaded and delivered in .nkc encrypted 
+                           format.                                                                            |
+| **.nkx**       | ?     | Monolith file format which only contains samples. Requires additional NKI files.   |
+| **.nkr**       | 4.2   | A resource container. Contains helper resources for a Kontakt script. Configured 
+                           in the Instrument settings of a Kontakt instrument.                                |
+
 ## Abbreviations
 
 | Abbreviation   | Meaning                                |
@@ -9,7 +28,7 @@
 | **V**          | Variable length.                       |
 | **big-endian** | The most significant byte is at the smallest memory address and the least significant byte at the largest. |
 
-## Kontakt 1
+## Kontakt 1 - NKI Format
 
 | # Bytes | Name       | Description                                                     |
 | :-------|:-----------|:----------------------------------------------------------------|
@@ -18,7 +37,7 @@
 | 28 **TBC** | **TODO**   | **TODO**                                                     |
 | V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded with Compression Level 2 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
 
-## Kontakt 2 - 4.1.x
+## Kontakt 2 - 4.1.x - NKI Format
 
 ### Structure
 
@@ -46,14 +65,45 @@
 - There is a checksum in there
 - The Instrument Options dialog in Kontakt contains several settings which might be in there
 
-## Kontakt 4.2.x
+## Kontakt 2 - 4.1.x - NKI Monolith Format
 
 ### Structure
+
+The header up to the ZLIB section is identical to the non-monolith version. Instead of the ZLIB section the monolith sample information starts.
+
+| # Bytes | Name           | Description                                                       |
+| :-------|:---------------|:------------------------------------------------------------------|
+| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                |
+| 8       | **TODO**       | **TODO**                                                          |
+| 16      |	Samples Tag    | Text stored as UTF-8 Null-terminated.                             |
+| 8       | **TODO**       | 4 byte offset + 4 byte length	?!                                 |
+| V       |	NKI-Filename   | The NKI-Filename as UTF-8 Null-terminated.                        |
+| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                |
+| 8       | **TODO**       | **TODO**                                                          |
+| 22      |	IR-Samples Tag | Text stored as UTF-8 Null-terminated.                             |
+| 8       | **TODO**       | **TODO**  (optional)                                              |
+| 22      |	Wallpaper Tag  | Text stored as UTF-8 Null-terminated (optional).                  |
+|         | Samples Desc.  | All names and some info about the included samples. As many blocks as samples. |
+| 2       | Length         | Length of block.                                                  |
+| 2       | **TODO**       | **TODO**                                                          |
+| 4       | **TODO**       | **TODO** Length of Sample / Frequency ?!                          |
+| V       |	Filename       | The original file name of the sample.                             |
+|         | Sample Data    |                                                                   |
+| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                |
+| 31      | **TODO**       | **TODO**                                                          |
+| V       | **TODO**       | **TODO** Data                                                     |
+| **TODO**| **TODO**       | **TODO**                                                          |
+
+## Kontakt 4.2.x - NKI Format
+
+### Structure
+
+The header and sound info parts are (mostly) identical to the previous version but the actual instrument part is different.
 
 | # Bytes | Name       | Description                                                       |
 | :-------|:-----------|:------------------------------------------------------------------|
 | ...     | as 4.1     | Identical to 4.1 structure up to and incl. the 7 bytes after the website info. |
-| 12      | **TODO**   | **TODO** - 12 mnore bytes introduced in 4.2                       |
+| 12      | **TODO**   | **TODO** - 12 more bytes introduced in 4.2                        |
 | 7       | **TODO**   | **TODO**                                                          |
 | 4       | **TODO**   | **TODO**   Length of ZLIB or checksum?!                           |
 | 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value (big-endian).     |
