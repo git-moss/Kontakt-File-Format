@@ -1,5 +1,20 @@
 # Kontakt File Format(s)
 
+Kontakt is a sampler from Native Instruments which uses a plethora of file formats which all are sadly proprietary
+and therefore no documentation is publicly available. This documentation tries to collect different pieces of
+information which are already available on the internet and adds some findings based on trial and error as well
+as common sense.
+
+* Christian Schoenebeck from LinuxSampler found out about the ZLIB encoding of the instrument description and wrote
+  tool which can export and import the human readable XML file from and to Kontakt .nki instrument        *
+  files (Kontakt formats v1 to v4 are supported): http://www.linuxsampler.org/nkitool/
+* Monomadic works on understanding the Kontakt 5+ formats and first findings are here: 
+  https://github.com/monomadic/ni-file
+* Maxton wrote a tool to extract NKX files which can be found here: https://github.com/maxton/nkxtract
+* Jimi Ford wrote another NKX extractor which can also handle NKS archives: https://github.com/JimiHFord/unnks
+
+Let's start with the known file types used by Kontakt:
+
 | File Ending    | Since | Content                                                                            |
 |:---------------|:------|------------------------------------------------------------------------------------|
 | **.nki**       | 1.0   | *Native Instruments Kontakt Instrument*. It contains one Instrument. It can 
@@ -56,7 +71,7 @@
 | 3       | **TODO**   | **TODO**                                                          |
 | 86      | Web Link   | A URL to the website of the creator. Null terminated UTF-8.       |
 | 7       | **TODO**   | **TODO**                                                          |
-| 4       | **TODO**   | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level |
+| 4       | **TODO**   | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
 | 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value (big-endian)).    |
 | V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded. Each tag is on one line, no indentation. |
 | 12      | **TODO**   | **TODO**                                                          |
@@ -71,28 +86,29 @@
 
 The header up to the ZLIB section is identical to the non-monolith version. Instead of the ZLIB section the monolith sample information starts.
 
-| # Bytes | Name           | Description                                                       |
-| :-------|:---------------|:------------------------------------------------------------------|
-| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                |
-| 8       | **TODO**       | **TODO**                                                          |
-| 16      |	Samples Tag    | Text stored as UTF-8 Null-terminated.                             |
-| 8       | **TODO**       | 4 byte offset + 4 byte length	?!                                 |
-| V       |	NKI-Filename   | The NKI-Filename as UTF-8 Null-terminated.                        |
-| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                |
-| 8       | **TODO**       | **TODO**                                                          |
-| 22      |	IR-Samples Tag | Text stored as UTF-8 Null-terminated.                             |
-| 8       | **TODO**       | **TODO**  (optional)                                              |
-| 22      |	Wallpaper Tag  | Text stored as UTF-8 Null-terminated (optional).                  |
-|         | Samples Desc.  | All names and some info about the included samples. As many blocks as samples. |
-| 2       | Length         | Length of block.                                                  |
-| 2       | **TODO**       | **TODO**                                                          |
-| 4       | **TODO**       | **TODO** Length of Sample / Frequency ?!                          |
-| V       |	Filename       | The original file name of the sample.                             |
-|         | Sample Data    |                                                                   |
-| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                |
-| 31      | **TODO**       | **TODO**                                                          |
-| V       | **TODO**       | **TODO** Data                                                     |
-| **TODO**| **TODO**       | **TODO**                                                          |
+| # Bytes | Name           | Description                                                          |
+| :-------|:---------------|:---------------------------------------------------------------------|
+| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                   |
+| 8       | **TODO**       | **TODO**                                                             |
+| 16      |	Samples Tag    | Text stored as UTF-8 Null-terminated.                                |
+| 8       | **TODO**       | 4 byte offset + 4 byte length	?!                                    |
+| V       |	NKI-Filename   | The NKI-Filename as UTF-8 Null-terminated.                           |
+| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                   |
+| 8       | **TODO**       | **TODO**                                                             |
+| 22      |	IR-Samples Tag | Text stored as UTF-8 Null-terminated.                                |
+| 8       | **TODO**       | **TODO**  (optional)                                                 |
+| 22      |	Wallpaper Tag  | Text stored as UTF-8 Null-terminated (optional).                     |
+|         | Samples Desc.  | All names and some info about the included samples. As many blocks 
+                             as samples.                                                          |
+| 2       | Length         | Length of block.                                                     |
+| 2       | **TODO**       | **TODO**                                                             |
+| 4       | **TODO**       | **TODO** Length of Sample / Frequency ?!                             |
+| V       |	Filename       | The original file name of the sample.                                |
+|         | Sample Data    |                                                                      |
+| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                   |
+| 31      | **TODO**       | **TODO** starts with "0A F8 CC 16"                                                         |
+| V       | Data           | Data of all samples. The raw content of the samples files.           |
+| V       | NKI            | The full data of a non-monolith NKI file. Even repeats the metadata. |
 
 ## Kontakt 4.2.x - NKI Format
 
@@ -120,6 +136,16 @@ The metadata block is at the end of the file.
 ## Battery 3
 
 **TODO**
+
+## NKX Format
+
+**TODO**
+
+## NCW Format
+
+NCW File Signature can be 0x01A89ED631010000 or 0x01A89ED630010000.
+The last DWORD value is different which likely indicates different compression algorithms.
+NCW is ADPCM (-> more correctly DPCM since there is no adaptive or prediction algorithm like A-law or mu-law used.That's why it's loseless).
 
 ## Lookup tables
 
