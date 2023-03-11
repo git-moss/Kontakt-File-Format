@@ -49,7 +49,8 @@ Let's start with the known file types used by Kontakt:
 | :-------|:-----------|:----------------------------------------------------------------|
 | 4       | File ID    | 5E E5 6E B3 - Identifies the Kontakt 1 file format.             |
 | 4       | ZLIB Start | The number of bytes in the file where the ZLIB starts. **TBC**  |
-| 28 **TBC** | **TODO**   | **TODO**                                                     |
+| 8       | **TODO**   | **TODO** always "50 00 01 00 00 00 00 00"                         |
+| 20 **TBC** | **TODO**   | **TODO**                                                     |
 | V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded with Compression Level 2 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
 
 ## Kontakt 2 - 4.1.x - NKI Format
@@ -60,7 +61,7 @@ Let's start with the known file types used by Kontakt:
 | :-------|:-----------|:------------------------------------------------------------------|
 | 4       | File ID    | 12 90 A8 7F - Identifies the Kontakt 2 file format.               |
 | 4       | ZLIB length| The length of the ZLIB block (big-endian).                        |
-| 8       | **TODO**   | **TODO**                                                          |
+| 8       | **TODO**   | **TODO** always "00 01 72 2A 01 3E 01 00"                         |
 | 4       | Version    | Version of Kontakt which created the file in reverse order. E.g. "02 01 00 02" is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
 | 4       | Block ID   | Type of the following file format.                                |
 | 4       | Timestamp  | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (big-endian) is 1298402059 is "22.02.2011 20:14:19" |
@@ -82,33 +83,120 @@ Let's start with the known file types used by Kontakt:
 
 ## Kontakt 2 - 4.1.x - NKI Monolith Format
 
-### Structure
+The header up to the ZLIB section is identical to the non-monolith version. 
+Instead of the ZLIB section the monolith sample information starts.
 
-The header up to the ZLIB section is identical to the non-monolith version. Instead of the ZLIB section the monolith sample information starts.
+It consists of several Dictionary blocks. Each Dictionary block contains several Items.
+After that, there are sections with the Sample, IR-Sample and Wallpaper image data. The file ends with the normal NKI
+content (even replicting the metadata).
 
-| # Bytes | Name           | Description                                                          |
-| :-------|:---------------|:---------------------------------------------------------------------|
-| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                   |
-| 8       | **TODO**       | **TODO**                                                             |
-| 16      |	Samples Tag    | Text stored as UTF-8 Null-terminated.                                |
-| 8       | **TODO**       | 4 byte offset + 4 byte length	?!                                    |
-| V       |	NKI-Filename   | The NKI-Filename as UTF-8 Null-terminated.                           |
-| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                   |
-| 8       | **TODO**       | **TODO**                                                             |
-| 22      |	IR-Samples Tag | Text stored as UTF-8 Null-terminated.                                |
-| 8       | **TODO**       | **TODO**  (optional)                                                 |
-| 22      |	Wallpaper Tag  | Text stored as UTF-8 Null-terminated (optional).                     |
-|         | Samples Desc.  | All names and some info about the included samples. As many blocks 
-                             as samples.                                                          |
-| 2       | Length         | Length of block.                                                     |
-| 2       | **TODO**       | **TODO**                                                             |
-| 4       | **TODO**       | **TODO** Length of Sample / Frequency ?!                             |
-| V       |	Filename       | The original file name of the sample.                                |
-|         | Sample Data    |                                                                      |
-| 22      | **TODO**       | **TODO** starts with "54 AC 70 5E"                                   |
-| 31      | **TODO**       | **TODO** starts with "0A F8 CC 16"                                                         |
-| V       | Data           | Data of all samples. The raw content of the samples files.           |
-| V       | NKI            | The full data of a non-monolith NKI file. Even repeats the metadata. |
+A Dictionary block looks like this:
+
+| # Bytes | Name           | Description                                                                          |
+| :-------|:---------------|:-------------------------------------------------------------------------------------|
+| 14      | Main header    | Seems to be always "54 AC 70 5E  10 01 00 00  00 00 FF 00  00 00"                    |
+| 4       | # sub-blocks   | The number of Dictionary Items contained in the block.                               |
+| 4       | Padding        | **TBC**                                                                              |
+
+A Dictionary Item looks like this:
+
+| # Bytes | Name      | Description                                                                               |
+| :-------|:----------|:------------------------------------------------------------------------------------------|
+| 2       | Length    | Length of the Item (incl. these 2 bytes).                                                 |
+| 4       | Pointer   | A reference pointer. Byte position in the file where the related data is stored.          |
+| 2       | Type      | Type of the reference.                                                                    |
+| V       |	Content   | The actual content of the Item.                                                           |
+
+Known types of Dictionary Item references:
+
+| #     | Description                        |
+| :-----|:-----------------------------------|
+| 01 00 | Reference to another Dictionary.   |
+| 02 00 | Reference to a sample.             |
+| 03 00 | Reference to the NKI start.        |
+| 04 00 | Reference to a wallpaper image.    |
+
+The known Dictionary Items are:
+
+#### Samples Reference
+
+| # Bytes | Name      | Description                                                                           |
+| :-------|:----------|:--------------------------------------------------------------------------------------|
+| 2       | Length    |                                                                                       |
+| 4       | Pointer   | Points to the Dictionary block which contains the sample information (one IR-Sample reference and N-Sample references).|
+| 2       | Type      | 01 00                                                                                 |
+| 16      |	Content   | "Samples" tag. Text stored as UTF-16 null terminated.                                 |
+
+#### NKI-Filename
+
+| # Bytes | Name      | Description                                                                           |
+| :-------|:----------|:--------------------------------------------------------------------------------------|
+| 2       | Length    |                                                                                       |
+| 4       | Pointer   | Beginning of NKI Instrument block.                                                    |
+| 2       | Type      | 03 00                                                                                 |
+| V       |	Content   | The NKI-Filename as UTF-16 Null-terminated.                                           |
+
+#### IR-Samples Reference
+
+| # Bytes | Name      | Description                                                                           |
+| :-------|:----------|:--------------------------------------------------------------------------------------|
+| 2       | Length    |                                                                                       |
+| 4       | Pointer   | Points to the Dictionary block which contains the IR-Sample information.              |
+| 2       | Type      | 01 00                                                                                 |
+| 16      |	Content   | "IR Samples" tag. Text stored as UTF-16 null terminated.                              |
+
+#### Sample
+
+| # Bytes | Name      | Description                                                                           |
+| :-------|:----------|:--------------------------------------------------------------------------------------|
+| 2       | Length    |                                                                                       |
+| 4       | Pointer   | Points to the Sample block which contains the Sample Data. **TBC**                    |
+| 2       | Type      | 02 00                                                                                 |
+| V       |	Content   | The original filename of the sample. Text stored as UTF-16 null terminated.           |
+
+#### Wallpaper Reference
+
+| # Bytes | Name           | Description                                                                      |
+| :-------|:---------------|:---------------------------------------------------------------------------------|
+| 2       | Length         |                                                                                  |
+| 4       | Pointer        | Points to the Dictionary block which contains the Wallpaper information.         |
+| 2       | Type           | 01 00                                                                            |
+| 20      |	Content        | "Wallpaper" tag. Text stored as UTF-16 null terminated.                          |
+
+#### Wallpaper
+
+| # Bytes | Name           | Description                                                                      |
+| :-------|:---------------|:---------------------------------------------------------------------------------|
+| 2       | Length         |                                                                                  |
+| 4       | Pointer        | Points to the location where the image starts in the file.                       |
+| 2       | Type           | 04 00                                                                            |
+| V       |	Content        | The original filename of the wallpaper. Text stored as UTF-16 null terminated.   |
+
+
+### Sample/IR-Sample Sections
+
+| # Bytes | Name           | Description                                                                      |
+| :-------|:---------------|:---------------------------------------------------------------------------------|
+| 31      | WAV Data header| Always "0A F8 CC 16  10 01 00 00  00 00 FF 00  00 00 01 00  00 00 00"            |
+| 4       | Filelength     | Length of the sample file.                                                       |
+| 4       | **TODO**       | **TBC** Offset to next WAV?                                                      |
+| V       | Sample Data    | The raw bytes from the original sample file.                                     |
+
+### Wallpaper Section
+
+| # Bytes | Name           | Description                                                                      |
+| :-------|:---------------|:---------------------------------------------------------------------------------|
+| V       | Image Data     | Maybe here is a header before it, too.   **TODO**                                |
+
+### NKI Section
+
+The file ends with the NKI section.
+
+| # Bytes | Name           | Description                                                                           |
+| :-------|:---------------|:--------------------------------------------------------------------------------------|
+| 27      | Header         | Always "3C E6 16 49  10 01 00 00  00 00 FF 00  00 00 01 00  00 00 00 22  0D 00 00 00  00 00 00" |
+| V       | NKI            | The full data of a non-monolith NKI file. Even repeats the metadata.                  |
+
 
 ## Kontakt 4.2.x - NKI Format
 
