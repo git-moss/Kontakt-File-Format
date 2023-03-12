@@ -18,13 +18,13 @@ Let's start with the known file types used by Kontakt:
 | File Ending    | Since | Content                                                                            |
 |:---------------|:------|------------------------------------------------------------------------------------|
 | **.nki**       | 1.0   | *Native Instruments Kontakt Instrument*. It contains one Instrument. It can also optionally contain the samples the .nki refers to; this is called a *monolith* file. |
-| **.nkb**       | 1.0   | *Native Instruments Kontakt Bank*. Groups several instruments as a bank which can be addressed with different MIDI channels and program changes. |
 | **.nkm**       | 1.0   | *Native Instruments Multi*. Contains multiple .nki's (up to 64) and .nkb's.        |
-| **.nkp**       | ?     | *Native Instruments Kontakt Preset*.                                               |
+| **.nkp**       | 1.0   | *Native Instruments Kontakt Module Preset*. All Kontakt modules can have their own presets. |
+| **.nkb**       | 2.0   | *Native Instruments Kontakt Bank*. Groups several instruments as a bank which can be addressed with different MIDI channels and program changes. |
 | **.nkg**       | ?     | The information of about a Kontakt Group (can be ex-/imported from the groups area in Kontakt). |
-| **.ncw**       | ?     | A lossless compressed sample. Can be un-/compressed with the Kontakt Batch Compress dialog. |
-| **.nkc**       | ?     | Kontakt Cache File. Libraries are downloaded and delivered in .nkc encrypted format. |
-| **.nkx**       | ?     | Monolith file format which only contains samples. Requires additional NKI files.   |
+| **.ncw**       | 4     | A lossless compressed sample. Can be un-/compressed with the Kontakt Batch Compress dialog. |
+| **.nkx**       | 2.1   | Monolith file format which only contains samples. NKX files are the Kontakt Player 2 version of monolithic sample containers (formerly called NKS files). |
+| **.nkc**       | 2.1   | Kontakt Cache File. Libraries are downloaded and delivered in .nkc encrypted format. NKC files save a content overview of monolithic sample containers (NKS / NKX) and are stored next to the monolith files. |
 | **.nkr**       | 4.2   | A resource container. Contains helper resources for a Kontakt script. Configured in the Instrument settings of a Kontakt instrument. |
 
 ## Abbreviations
