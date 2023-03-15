@@ -38,41 +38,47 @@ Let's start with the known file types used by Kontakt:
 
 ## Kontakt 1 - NKI Format
 
-| # Bytes | Name       | Description                                                     |
-| :-------|:-----------|:----------------------------------------------------------------|
-| 4       | File ID    | 5E E5 6E B3 - Identifies the Kontakt 1 file format.             |
-| 4       | ZLIB Start | The number of bytes in the file where the ZLIB starts. **TBC**  |
-| 8       | **TODO**   | **TODO** always "50 00 01 00 00 00 00 00"                         |
-| 20 **TBC** | **TODO**   | **TODO**                                                     |
-| V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded with Compression Level 2 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
+| # Bytes | Name        | Description                                                         |
+| :-------|:------------|:--------------------------------------------------------------------|
+| 4       | File ID     | 5E E5 6E B3 - Identifies the Kontakt 1 file format.                 |
+| 4       | ZLIB Start  | The number of bytes in the file where the ZLIB starts. Always 0x24. |
+| 2       | **TODO**    | **TODO** always "50 00"                                             |
+| 1       | **TODO**    | **TODO** valid in the range of 00 - 03                              |
+| 9       | **TODO**    | **TODO** always 00                                                  |
+| 4       | **TODO**    | **TODO** always "01 00 00 00"                                       |
+| 4       | Timestamp   | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (BE) is 1298402059 is "22.02.2011 20:14:19" |
+| 4       | Sample size | The sum of the size of all used samples (only the content data block of a WAV without any headers). |
+| 4       | **TODO**    | **TODO** always 00                                                  |
+| V       | Inst. data  | XML document with all the data of the instrument, ZLIB encoded with Compression Level 2 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
 
 ## Kontakt 2 - 4.1.x - NKI Format
 
+The file can be stored in Big-Endian (BE) or Little-Endian (LE). This can be detected by the File ID.
+The number of bytes for a value (given in the 1st column below) need then be read/written either BE or LE.
+
 ### Structure
 
-| # Bytes | Name       | Description                                                       |
-| :-------|:-----------|:------------------------------------------------------------------|
-| 4       | File ID    | 12 90 A8 7F - Identifies the Kontakt 2 file format.               |
-| 4       | ZLIB length| The length of the ZLIB block (big-endian).                        |
-| 8       | **TODO**   | **TODO** always "00 01 72 2A 01 3E 01 00"                         |
-| 4       | Version    | Version of Kontakt which created the file in reverse order. E.g. "02 01 00 02" is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
-| 4       | Block ID   | Type of the following file format.                                |
-| 4       | Timestamp  | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (big-endian) is 1298402059 is "22.02.2011 20:14:19" |
-| 26      | **TODO**   | **TODO**                                                          |
-| -       | Inst. Info | Information about the instrument.                                 |
-| 4       | Icon       | The icon of the instrument (big-endian).                          |
-| 8       | Author     | The author of the instrument (ISO Latin Alphabet ISO_8859_1)      |
-| 3       | **TODO**   | **TODO**                                                          |
-| 86      | Web Link   | A URL to the website of the creator. Null terminated UTF-8.       |
-| 7       | **TODO**   | **TODO**                                                          |
+| # Bytes | Name       | Description                                                                     |
+| :-------|:-----------|:--------------------------------------------------------------------------------|
+| 4       | File ID    | 12 90 A8 7F (BE) / 7F A8 90 12 (LE) - Identifies the Kontakt 2 file format.     |
+| 4       | ZLIB length| The length of the ZLIB block.                                                   |
+| 2       | **TODO**   | **TODO** always (?) "00 01" (BE) / "01 00" (LE)                                 |
+| 4       | **TODO**   | **TODO** always (?) "72 2A 01 3E" (BE) / "3E 01 2A 72" (LE)                     |
+| 2       | **TODO**   | **TODO** always (?) "01 00" (BE) / "00 01" (LE)                                 |
+| 4       | Version    | Version of Kontakt which created the file E.g. "02 01 00 02" (BE) is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
+| 4       | Block ID   | Type of the following file format.                                              |
+| 4       | Timestamp  | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (BE) is 1298402059 is "22.02.2011 20:14:19" |
+| 26      | **TODO**   | **TODO**                                                                        |
+| 4       | Icon       | The icon of the instrument.                                                     |
+| 8       | Author     | The author of the instrument (ISO Latin Alphabet ISO_8859_1)                    |
+| 3       | **TODO**   | **TODO**                                                                        |
+| 86      | Web Link   | A URL to the website of the creator. Null terminated UTF-8.                     |
+| 7       | **TODO**   | **TODO**                                                                        |
 | 4       | **TODO**   | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
-| 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value (big-endian)).    |
+| 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value.                                |
 | V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded. Each tag is on one line, no indentation. |
-| 12      | **TODO**   | **TODO**                                                          |
-| V       | Soundinfo  | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database. |
-
-- There is a checksum in there
-- The Instrument Options dialog in Kontakt contains several settings which might be in there
+| 12      | **TODO**   | **TODO**                                                                        |
+| V       | Soundinfo  | (optional) [Soundinfo](./Soundinfo.md) block containing info to be stored in the database. |
 
 ## Kontakt 2 - 4.1.x - NKI Monolith Format
 
@@ -268,10 +274,11 @@ There are 29 icons.
 
 ### Block ID
 
-| Bytes (as ASCII) | Type              |
-|:-----------------|:------------------|
-| 2noK             | Kontakt 2         |
-| Kon3             | Kontakt 3         |
-| 3noK             | Kontakt 3         |
-| 4noK		         | Kontakt 4         |
-| iPkA             | Akustik Piano from Kontakt 3 Library |
+Known block IDs are:
+
+| Bytes (ASCII in little-endian) | Type                                 |
+|:-------------------------------|:-------------------------------------|
+| Kon2                           | Kontakt 2                            |
+| Kon3                           | Kontakt 3                            |
+| Kon4		                       | Kontakt 4                            |
+| AkPi                           | Akustik Piano from Kontakt 3 Library |
