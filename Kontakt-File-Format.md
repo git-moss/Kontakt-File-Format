@@ -29,12 +29,12 @@ Let's start with the known file types used by Kontakt:
 
 ## Abbreviations
 
-| Abbreviation   | Meaning                                |
-|:---------------|:---------------------------------------|
-| **TODO**       | Not looked into yet or simply no idea. |
-| **TBC**        | Good guess but not confirmed yet.      |
-| **V**          | Variable length.                       |
-| **big-endian** | The most significant byte is at the smallest memory address and the least significant byte at the largest. |
+| Abbreviation  | Meaning                                |
+|:--------------|:---------------------------------------|
+| **TODO**      | Not looked into yet or simply no idea. |
+| **TBC**       | Good guess but not confirmed yet.      |
+| **V**         | Variable length.                       |
+| **BE**        | Big-endian. The most significant byte is at the smallest memory address and the least significant byte at the largest. |
 
 ## Kontakt 1 - NKI Format
 
