@@ -68,7 +68,11 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 4       | Version    | Version of Kontakt which created the file E.g. "02 01 00 02" (BE) is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
 | 4       | Block ID   | Type of the following file format.                                              |
 | 4       | Timestamp  | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (BE) is 1298402059 is "22.02.2011 20:14:19" |
-| 26      | **TODO**   | **TODO**                                                                        |
+| 4       | **TODO**   | **TODO**                                                                        |
+| 2       | Num.Zones  | The number of zones.                                                            |
+| 2       | Num.Groups | The number of groups.                                                           |
+| 2       | Num.Inst.  | **TBC** The number of instruments.                                              |
+| 16      | **TODO**   | **TODO**                                                                        |
 | 4       | Icon       | The icon of the instrument.                                                     |
 | 8       | Author     | The author of the instrument (ISO Latin Alphabet ISO_8859_1)                    |
 | 3       | **TODO**   | **TODO**                                                                        |
@@ -76,9 +80,9 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 7       | **TODO**   | **TODO**                                                                        |
 | 4       | **TODO**   | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
 | 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value.                                |
-| V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded. Each tag is on one line, no indentation. |
-| 12      | **TODO**   | **TODO**                                                                        |
-| V       | Soundinfo  | (optional) [Soundinfo](./Soundinfo.md) block containing info to be stored in the database. |
+| V       | Inst. data | XML document with all the data of the instrument, ZLIB encoded with Compression Level 1 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
+| 12      | SI Header  | **TODO** AE E1 0E B0 01 01 0C 00 D9 00 00 00 (BE)                               |
+| V       | Soundinfo  | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database. |
 
 ## Kontakt 2 - 4.1.x - NKI Monolith Format
 
