@@ -220,9 +220,7 @@ The header and sound info parts are (mostly) identical to the previous version b
 
 ## Kontakt 5, 6 and 7
 
-**TODO**
-
-The metadata block is at the end of the file.
+[See here](./NI-Container.md)
 
 ## Battery 3
 

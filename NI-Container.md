@@ -50,7 +50,7 @@ a terminal chunk.
 | 3       | BNI Sound Preset                                                             |
 | 4       | BNI Sound Header                                                             |
 | 100     | Bank                                                                         |
-| 101     | Preset                                                                       |
+| 101     | [Preset](#preset-chunk). Info about the authoring application.               |
 | 102     | Bank Container                                                               |
 | 103     | Preset Container                                                             |
 | 104     | Binary Chunk Item                                                            |
@@ -74,6 +74,16 @@ a terminal chunk.
 ## Additional Chunk Data
 
 The following tables describe the additional data of the different chunk types.
+
+### Preset Chunk
+
+| # Bytes | Name          | Description                                                                 |
+| :-------|:--------------|:----------------------------------------------------------------------------|
+| 4       | Version       | The version of the format used by the specific chunk type.                  |
+| 1       | Compressed    | Is the preset data compressed? Yes, if not 0.                               |
+| 4       | Application   | The ID of the [authoring application](#authoring-application-ids) which created this file. |
+| 4       | **TODO**      | **TODO**                                                                    |
+| V       | App. Version  | The version of the authoring application which created the file.            |
 
 ### Root Chunk
 
@@ -115,3 +125,39 @@ The following tables describe the additional data of the different chunk types.
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
 | 4       | Version       | The version of the format used by the specific chunk type.                  |
+
+## Authoring Application IDs
+
+| # ID    | Description      |
+| :-------|:-----------------|
+| 1       | Guitar Rig       |
+| 2       | Kontakt          |
+| 3       | Kore             |
+| 4       | Reaktor          |
+| 5       | Maschine         |
+| 6       | Absynth          |
+| 7       | Massive          |
+| 8       | FM 8             |
+| 9       | Battery          |
+| 10      | Komplete Kontrol |
+| 11      | SC               |
+| 12      | FXF 01           |
+| 13      | FXF 02           |
+| 14      | FXF 03           |
+| 15      | FXF 04           |
+| 16      | FXF 05           |
+| 17      | FXF 06           |
+| 18      | FXF 07           |
+| 19      | FXF 08           |
+| 20      | FXF 09           |
+| 21      | FXF 10           |
+| 22      | FXF 11           |
+| 23      | FXF 12           |
+| 24      | FXF 13           |
+| 25      | FXF 14           |
+| 26      | FXF 15           |
+| 27      | FXF 16           |
+| 28      | FXF 17           |
+| 29      | FXF 18           |
+| 30      | FXF 19           |
+| 31      | Traktor          |
