@@ -9,9 +9,9 @@ All numbers are stored little-endian.
 | # Bytes | Name        | Description                                                           |
 | :-------|:------------|:----------------------------------------------------------------------|
 | 8       | Size        | The size of the whole item incl. the size bytes themselves, which means the data content is the size minus 8. E.g. for the root item this is the size of the whole file. |
-| 4       | **TODO**    | **TODO**   always 1?                                                  |
-| 4       | Domain ID   | 4 ASCII characters identifying the domain to which the data belongs. Most items are e.g. 'hsin'. |
-| 4       | **TODO**    | **TODO**   always 1?                                                  |
+| 4       | Version     | Version check for NI Sound v1 (1)                                     |
+| 4       | Domain ID   | Magic char[4](le) 'nish' (Native Instruments Sound Header)            |
+| 4       | Header Flags | Currently only uses 'deferred' as a flag.                            |
 | 4       | **TODO**    | **TODO**   always 0?                                                  |
 | 16      | UUID        | Universally Unique Identifier (UUID) for this item.                   |
 | V       | Chunk List  | All chunks related to this item.                                      |
@@ -23,7 +23,7 @@ All numbers are stored little-endian.
 
 | # Bytes | Name        | Description                                                                 |
 | :-------|:------------|:----------------------------------------------------------------------------|
-| 4       | **TODO**    | **TODO**    Seen 0, 1, 2 and 1001                                           |
+| 4       | **TODO**    |     Seen 0, 1, 2 and 1001                                           |
 | 4       | Domain ID   | 4 ASCII characters identifying the domain to which the data belongs.        |
 | 4       | Chunk type  | The ID of the chunk type. The list of known chunk types can be found below. |
 | V       | Item        | The Container Item structure of the child item.                             |
@@ -36,8 +36,8 @@ a terminal chunk.
 | # Bytes | Name         | Description                                                                 |
 | :-------|:-------------|:----------------------------------------------------------------------------|
 | 8       | Length       | The size of the bytes till the end of the chunk (incl. the size bytes themselves and all inner chunks), which means the 1st chunk contains the size of all chunks. |
-| 4       | Domain ID    | 4 ASCII characters identifying the domain to which the data belongs. Most items are e.g. 'DSIN'. |
-| 4       | Chunk type   | The ID of the chunk type. The list of known chunk types can be found below. |
+| 4       | Domain ID    | 4 ASCII characters identifying the domain to which the data belongs. Most items are e.g. 'NISD' (Native Instruments Sound Domain. |
+| 4       | Item ID      | The ID of the Item, within the domain. |
 | 4       | Version      | The version of the format used by the specific chunk type.                  |
 | V       | Inner Chunks | The wrapped chunks, same structure starting with the Length field.          |
 | V       | Data         | The actual data of the chunk. The size depends on the type of the chunk.    |
@@ -47,8 +47,8 @@ a terminal chunk.
 | # ID    | Description                                                                           |
 | :-------|:--------------------------------------------------------------------------------------|
 | 1       | [Terminator](#terminator-chunk). The last chunk in a chunk stack.                     |
-| 3       | BNI Sound Preset                                                                      |
-| 4       | BNI Sound Header                                                                      |
+| 3       | BNI Sound Preset (only used in NIK4 domain)                                           |
+| 4       | BNI Sound Header (only used in NIK4 domain)                                           |
 | 100     | Bank                                                                                  |
 | 101     | Metadata information about the [Authoring Application](#authoring-application-chunk). |
 | 102     | Bank Container                                                                        |
