@@ -73,7 +73,7 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 2       | Num.Groups | The number of groups.                                                           |
 | 2       | Num.Inst.  | **TBC** The number of instruments.                                              |
 | 16      | **TODO**   | **TODO**                                                                        |
-| 4       | Icon       | The icon of the instrument.                                                     |
+| 4       | Icon       | The icon of the instrument ([list of icon IDs](./Icons.md)).                    |
 | 8       | Author     | The author of the instrument (ISO Latin Alphabet ISO_8859_1)                    |
 | 3       | **TODO**   | **TODO**                                                                        |
 | 86      | Web Link   | A URL to the website of the creator. Null terminated UTF-8.                     |
@@ -90,8 +90,8 @@ The header up to the ZLIB section is identical to the non-monolith version.
 Instead of the ZLIB section the monolith sample information starts.
 
 It consists of several Dictionary blocks. Each Dictionary block contains several Items.
-After that, there are sections with the Sample, IR-Sample and Wallpaper image data. The file ends with the normal NKI
-content (even replicting the metadata).
+After that, there are sections with the Sample, IR-Sample and Wallpaper image data. The file 
+ends with the normal NKI content (even replicting the metadata).
 
 A Dictionary block looks like this:
 
@@ -207,20 +207,24 @@ The file ends with the NKI section.
 
 The header and sound info parts are (mostly) identical to the previous version but the actual instrument part is different.
 
-| # Bytes | Name       | Description                                                       |
-| :-------|:-----------|:------------------------------------------------------------------|
-| ...     | as 4.1     | Identical to 4.1 structure up to and incl. the 7 bytes after the website info. |
-| 12      | **TODO**   | **TODO** - 12 more bytes introduced in 4.2                        |
-| 7       | **TODO**   | **TODO**                                                          |
-| 4       | **TODO**   | **TODO**   Length of ZLIB or checksum?!                           |
-| 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value (big-endian).     |
-| V       | Inst. data | **TODO**                                                          |
-| 12      | **TODO**   | **TODO**                                                          |
+| # Bytes | Name       | Description                                                                     |
+| :-------|:-----------|:--------------------------------------------------------------------------------|
+| ...     | as 4.1     | Identical to 4.1 structure up to and incl. the 7 bytes after the website info.  |
+| 12      | **TODO**   | **TODO** - 12 more bytes introduced in 4.2                                      |
+| 7       | **TODO**   | **TODO**                                                                        |
+| 4       | **TODO**   | **TODO**   Length of ZLIB or checksum?!                                         |
+| 4       | Patchlevel | Patchlevel of Kontakt version. One 32-bit value (big-endian).                   |
+| V       | Inst. data | **TODO**                                                                        |
+| 12      | **TODO**   | **TODO**                                                                        |
 | V       | Soundinfo  | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database. |
 
 ## Kontakt 5, 6 and 7
 
-[See here](./NI-Container.md)
+Starting with Kontakt 5, Native Instruments introduced a container format which is used by all current plugins.
+The specification of the generic container format is here: [NI Container Format](./NI-Container.md)
+
+The actual Kontakt Instrument preset is stored in the *Data* section of a *Preset Data Chunk*.
+The format is documented here: [Kontakt 5 Instrument Preset](./Kontakt5-Preset.md)
 
 ## Battery 3
 
@@ -237,42 +241,6 @@ The last DWORD value is different which likely indicates different compression a
 NCW is ADPCM (-> more correctly DPCM since there is no adaptive or prediction algorithm like A-law or mu-law used.That's why it's loseless).
 
 ## Lookup tables
-
-### Icons
-
-There are 29 icons.
-
-| Byte | Description     |
-| :----|:----------------|
-| 00   | Organ           |
-| 01   | Cello           |
-| 02   | Drum Kit        |
-| 03   | Bell            |
-| 04   | Trumpet         |
-| 05   | Guitar          |
-| 06   | Piano           |
-| 07   | Marimba         |
-| 08   | Record Player   |
-| 09   | E-Piano         |
-| 0A   | Drum Pads       |
-| 0B   | Bass Guitar     |
-| 0C   | Electric Guitar |
-| 0D   | Wave            |
-| 0E   | Asian Symbol    |
-| 0F   | Flute           |
-| 10   | Speaker         |
-| 11   | Score           |
-| 12   | Conga           |
-| 13   | Pipe Organ      |
-| 14   | Wave            |
-| 15   | FX              |
-| 16   | Computer        |
-| 17   | Violin          |
-| 18   | Surround        |
-| 19   | Synthesizer     |
-| 1A   | Oboe            |
-| 1B   | Saxophone       |
-| 1C   | New             |
 
 ### Block ID
 

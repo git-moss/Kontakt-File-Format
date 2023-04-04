@@ -44,38 +44,38 @@ a terminal chunk.
 
 ## Known Chunk Types
 
-| # ID    | Description                                                                  |
-| :-------|:-----------------------------------------------------------------------------|
-| 1       | [Terminator](#terminator-chunk). The last chunk in a chunk stack.            |
-| 3       | BNI Sound Preset                                                             |
-| 4       | BNI Sound Header                                                             |
-| 100     | Bank                                                                         |
-| 101     | [Preset](#preset-chunk). Info about the authoring application.               |
-| 102     | Bank Container                                                               |
-| 103     | Preset Container                                                             |
-| 104     | Binary Chunk Item                                                            |
-| 106     | Authorization                                                                |
-| 108     | [Soundinfo](#soundinfo-chunk). Some metadata about the 'sound'.              |
-| 109     | Preset Chunk Item                                                            |
-| 110     | External File Reference                                                      |
-| 111     | Resources                                                                    |
-| 112     | Audio Sample Item                                                            |
-| 113     | Internal Resource Reference Item                                             |
-| 114     | Picture Item                                                                 |
-| 115     | Subtree Item                                                                 |
-| 116     | Encryption Item                                                              |
-| 117     | App Specific                                                                 |
-| 118     | [Root](#root-chunk). The root chunk in a container.                          |
-| 120     | Automation Parameters                                                        |
-| 121     | Controller Assignments                                                       |
-| 122     | Module                                                                       |
-| 123     | Module Bank                                                                  |
+| # ID    | Description                                                                           |
+| :-------|:--------------------------------------------------------------------------------------|
+| 1       | [Terminator](#terminator-chunk). The last chunk in a chunk stack.                     |
+| 3       | BNI Sound Preset                                                                      |
+| 4       | BNI Sound Header                                                                      |
+| 100     | Bank                                                                                  |
+| 101     | Metadata information about the [Authoring Application](#authoring-application-chunk). |
+| 102     | Bank Container                                                                        |
+| 103     | Preset Container                                                                      |
+| 104     | Binary Chunk Item                                                                     |
+| 106     | Authorization                                                                         |
+| 108     | [Soundinfo](#soundinfo-chunk). Some metadata about the 'sound'.                       |
+| 109     | [Preset Data](#preset-data-chunk) contains the actual preset data.                    |
+| 110     | External File Reference                                                               |
+| 111     | Resources                                                                             |
+| 112     | Audio Sample Item                                                                     |
+| 113     | Internal Resource Reference Item                                                      |
+| 114     | Picture Item                                                                          |
+| 115     | A [Subtree Item](#subtree-item-chunk) stores another (compressed) Container Item.     |
+| 116     | Encryption Item                                                                       |
+| 117     | App Specific                                                                          |
+| 118     | [Root](#root-chunk). The root chunk in a container.                                   |
+| 120     | Automation Parameters                                                                 |
+| 121     | Controller Assignments                                                                |
+| 122     | Module                                                                                |
+| 123     | Module Bank                                                                           |
 
 ## Additional Chunk Data
 
 The following tables describe the additional data of the different chunk types.
 
-### Preset Chunk
+### Authoring Application Chunk
 
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
@@ -84,6 +84,20 @@ The following tables describe the additional data of the different chunk types.
 | 4       | Application   | The ID of the [authoring application](#authoring-application-ids) which created this file. |
 | 4       | **TODO**      | **TODO**                                                                    |
 | V       | App. Version  | The version of the authoring application which created the file.            |
+
+### Preset Data Chunk
+
+| # Bytes | Name          | Description                                                                 |
+| :-------|:--------------|:----------------------------------------------------------------------------|
+| 4       | Version       | The version of the format used by the specific chunk type.                  |
+| **TODO**| **TODO**      | **TODO**                                                                    |
+| 4       | **TBC**       | **TBC** Dictionary type.                                                    |
+| 4       | **TBC**       | **TBC** Number of items in the Dictionary.                                  |
+| 4       | Item Size     | The size of the item.                                                       |
+| 4       | **TODO**      | **TODO**   00 00 00 00     does this belong to the size?                    |
+| V       | Data          | The data of the preset.                                                     |
+| 4       | End Padding   | **TBC** 00 00 00 00                                                         |
+| 4       | Checksum      | **TBC**                                                                     |
 
 ### Root Chunk
 
@@ -119,6 +133,16 @@ The following tables describe the additional data of the different chunk types.
 | 4       | **TODO**        | Always 0                                                                  |
 | 4       | # Properties    | The number of properties to follow.                                       |
 | V       | Properties 1-N  | Each property consists of a key and value string (UTF-16LE with 4 byte length field).|
+
+### Subtree Item Chunk
+
+| # Bytes | Name          | Description                                                                 |
+| :-------|:--------------|:----------------------------------------------------------------------------|
+| 4       | Version       | The version of the format used by the specific chunk type.                  |
+| 1       | Is Compressed | 1 if the item data is compressed otherwise 0.                               |
+| 4       | Size uncompr. | The size of the uncompressed item data.                                     |
+| 4       | Size compr.   | The size of the compressed item data. 0 if data is not compressed.          |
+| V       | Item Data     | The un-/compressed data. Compression uses [FastLZ](https://ariya.github.io/FastLZ/) |
 
 ### Terminator Chunk
 
