@@ -3,9 +3,9 @@
 | # Bytes | Name         | Description                                                                     |
 | :-------|:-------------|:--------------------------------------------------------------------------------|
 | 1       | ID           | The ID for a Kontakt 5 Preset. Always 0x28.                                     |
-| 1       | Size Block 1 | The size of the first data block.                                               |
+| 4       | Size Block 1 | The size of the first data block.                                               |
 | V       | Block 1      | The data of the first data block.                                               |
-| 1       | Size Block 2 | The size of the second data block.                                              |
+| 4       | Size Block 2 | The size of the second data block.                                              |
 | V       | Block 2      | The data of the second data block.                                              |
 
 ## Block 1

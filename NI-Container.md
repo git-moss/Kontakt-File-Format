@@ -6,24 +6,24 @@ All numbers are stored little-endian.
 
 ## Container Item
 
-| # Bytes | Name        | Description                                                           |
-| :-------|:------------|:----------------------------------------------------------------------|
-| 8       | Size        | The size of the whole item incl. the size bytes themselves, which means the data content is the size minus 8. E.g. for the root item this is the size of the whole file. |
-| 4       | Version     | Version check for NI Sound v1 (1)                                     |
-| 4       | Domain ID   | Magic char[4](le) 'nish' (Native Instruments Sound Header)            |
-| 4       | Header Flags | Currently only uses 'deferred' as a flag.                            |
-| 4       | **TODO**    | **TODO**   always 0?                                                  |
-| 16      | UUID        | Universally Unique Identifier (UUID) for this item.                   |
-| V       | Chunk List  | All chunks related to this item.                                      |
-| 4       | Version     | The version (a number) of the child item format.                      |
-| 4       | # Children  | The number of child items to follow.                                  |
-| V       | Child Items | The child items, if any.                                              |
+| # Bytes | Name         | Description                                                           |
+| :-------|:-------------|:----------------------------------------------------------------------|
+| 8       | Size         | The size of the whole item incl. the size bytes themselves, which means the data content is the size minus 8. E.g. for the root item this is the size of the whole file. |
+| 4       | Version      | Version check for NI Sound v1 (1)                                     |
+| 4       | Domain ID    | Magic char[4](le) 'nish' (Native Instruments Sound Header)            |
+| 4       | Header Flags | Currently only uses 'deferred' as a flag.                             |
+| 4       | **TODO**     | **TODO**   always 0?                                                  |
+| 16      | UUID         | Universally Unique Identifier (UUID) for this item.                   |
+| V       | Chunk List   | All chunks related to this item.                                      |
+| 4       | Version      | The version (a number) of the child item format.                      |
+| 4       | # Children   | The number of child items to follow.                                  |
+| V       | Child Items  | The child items, if any.                                              |
 
 ## Container Child Item
 
 | # Bytes | Name        | Description                                                                 |
 | :-------|:------------|:----------------------------------------------------------------------------|
-| 4       | **TODO**    |     Seen 0, 1, 2 and 1001                                           |
+| 4       | **TODO**    |     Seen 0, 1, 2 and 1001                                                   |
 | 4       | Domain ID   | 4 ASCII characters identifying the domain to which the data belongs.        |
 | 4       | Chunk type  | The ID of the chunk type. The list of known chunk types can be found below. |
 | V       | Item        | The Container Item structure of the child item.                             |
