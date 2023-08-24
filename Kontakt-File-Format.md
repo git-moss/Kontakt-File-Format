@@ -61,7 +61,7 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | # Bytes | Name           | Description                                                                 |
 | :-------|:---------------|:-------------------------------------------------------------------------------------|
 | 4       | File ID        | 12 90 A8 7F (BE) / 7F A8 90 12 (LE) - Identifies the Kontakt 2 file format.          |
-| 4       | ZLIB length    | The length of the ZLIB block.                                                        |
+| 4       | ZLIB length    | The length of the ZLIB block (or FastLZ for Kontakt 4.2).                            |
 | 2       | Header Version | Kontakt 2: "00 01" (BE) / "01 00" (LE) - 4.2: "10 01 (BE)"                           |
 | 4       | Patch Version  | K2: "72 2A 01 3E" (BE) / "3E 01 2A 72" (LE) - 4.2: "1A 63 37 EA (BE)"                |
 | 2       | Patch Type     | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 - NKI: "01 00" (BE) / "00 01" (LE)          |
@@ -74,10 +74,11 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 2       | Num.Inst.      | The number of instruments.                                                           |
 | 16      | **TODO**       | **TODO**                                                                             |
 | 4       | Icon           | The icon of the instrument ([list of icon IDs](./Icons.md)).                         |
-| 8       | Author         | The author of the instrument (ISO Latin Alphabet ISO_8859_1)                         |
-| 3       | **TODO**       | **TODO**                                                                             |
-| 86      | Web Link       | A URL to the website of the creator. Null terminated UTF-8.                          |
-| 7       | **TODO**       | **TODO**                                                                             |
+| 9       | Author         | The author of the instrument (ISO Latin Alphabet ISO_8859_1). Null terminated.       |
+| 2       | **TODO**       | **TODO**                                                                             |
+| 87      | Web Link       | A URL to the website of the creator (ISO Latin Alphabet ISO_8859_1). Null terminated.|
+| 2       | **TODO**       | **TODO**                                                                             |
+| 4       | **TODO**       | **TODO**                                                                             |
 | 4       | **TODO**       | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
 | 4       | Patchlevel     | Patchlevel of Kontakt version. One 32-bit value.                                     |
 | V       | Inst. data     | XML document with all the data of the instrument, ZLIB encoded with Compression Level 1 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
@@ -175,7 +176,6 @@ The known Dictionary Items are:
 | 2       | Type           | 04 00                                                                            |
 | V       |	Content        | The original filename of the wallpaper. Text stored as UTF-16 null terminated.   |
 
-
 ### Sample/IR-Sample Sections
 
 | # Bytes | Name           | Description                                                                      |
@@ -211,13 +211,12 @@ The header and sound info parts are (mostly) identical to the previous version b
 | :-------|:-------------|:-------------------------------------------------------------------------------------------------|
 | ...     | as 4.1       | Identical to 4.1 structure up to and incl. the 7 bytes after the website info.                   |
 | 12      | **TODO**     | **TODO**                                                                                         |
-| 7       | **TODO**     | **TODO**                                                                                         |
 | 4       | **TODO**     | **TODO**   Checksum?!                                                                            |
 | 4       | Patchlevel   | Patchlevel of Kontakt version. One 32-bit value (big-endian).                                    |
-| 6       | **TODO**     | **TODO**                                                                                         |
-| 34      | **TODO**     | Padding?!                                                                                        |
-| V       | Preset       | The preset data same as [Kontakt 5 Instrument Preset](./Kontakt5-Preset.md) ?!                   |
-| 12      | **TODO**     | **TODO**                                                                                         |
+| 4       | **TODO**     | **TODO**                                                                                         |
+| 4       | **TODO**     | Length of the decompressed data.                                                                 |
+| 32      | **TODO**     | Padding?!                                                                                        |
+| V       | Preset       | The preset data same as [Kontakt 5 Instrument Preset](./Kontakt5-Preset.md) but compressed with FastLZ (see https://ariya.github.io/FastLZ/).|
 | V       | Soundinfo    | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database.                  |
 
 ## Kontakt 5, 6 and 7

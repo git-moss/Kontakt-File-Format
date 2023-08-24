@@ -37,7 +37,7 @@ a terminal chunk.
 | :-------|:-------------|:----------------------------------------------------------------------------|
 | 8       | Length       | The size of the bytes till the end of the chunk (incl. the size bytes themselves and all inner chunks), which means the 1st chunk contains the size of all chunks. |
 | 4       | Domain ID    | 4 ASCII characters identifying the domain to which the data belongs. Most items are e.g. 'NISD' (Native Instruments Sound Domain. |
-| 4       | Item ID      | The ID of the Item, within the domain. |
+| 4       | Item ID      | The ID of the Item, within the domain.                                      |
 | 4       | Version      | The version of the format used by the specific chunk type.                  |
 | V       | Inner Chunks | The wrapped chunks, same structure starting with the Length field.          |
 | V       | Data         | The actual data of the chunk. The size depends on the type of the chunk.    |
@@ -80,7 +80,7 @@ The following tables describe the additional data of the different chunk types.
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
 | 4       | Version       | The version of the format used by the specific chunk type.                  |
-| 1       | Compressed    | Is the preset data compressed? Yes, if not 0.                               |
+| 1       | Prop. version | Property version?                                                           |
 | 4       | Application   | The ID of the [authoring application](#authoring-application-ids) which created this file. |
 | 4       | **TODO**      | **TODO**                                                                    |
 | V       | App. Version  | The version of the authoring application which created the file.            |
@@ -90,7 +90,6 @@ The following tables describe the additional data of the different chunk types.
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
 | 4       | Version       | The version of the format used by the specific chunk type.                  |
-| **TODO**| **TODO**      | **TODO**                                                                    |
 | 4       | **TBC**       | **TBC** Dictionary type.                                                    |
 | 4       | **TBC**       | **TBC** Number of items in the Dictionary.                                  |
 | 4       | Item Size     | The size of the item.                                                       |
