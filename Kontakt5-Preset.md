@@ -223,11 +223,24 @@ The following format is used in the *Block 2 Data* section of a Preset Chunk. Th
 
 | # Bytes | Version | Name               | Description                                                               |
 | :-------|:--------|:-------------------|:--------------------------------------------------------------------------|
-| 2       |         | Version            | The version of the Ex data.                                               |
-| 4       | 0x4B    | **TODO**           | **TODO**                                                                  |
+| 2       | Ex only | Ex-Version         | The version of the Ex data. Should be 2.                                  |
+| 4       | Ex only | **TODO**           | **TODO**                                                                  |
+| 4       |         | Version            | The version of the data. Should be 0 or 1.                                |
+| V       | 1       | NKR file           | One [Segment Block](#segment-block) containing a NKR file.                |
+| 4       | 1       | **TODO**           | **TODO** Padding?                                                         |
 | 4       |         | File Count         | The number of files in the list.                                          |
-|         |         |                    | For each file:                                                            |
+| V       |         | Segments           | For each file follows one [Segment Block](#segment-block).                |
+
+### Segment Block
+
+| # Bytes | Version | Name               | Description                                                               |
+| :-------|:--------|:-------------------|:--------------------------------------------------------------------------|
 | 4       |         | Segment Count      | The number of segments of the path.                                       |
-|         |         |                    | For each segment:                                                         |
+| V       |         | Segment            | For each segment follows one [Segment](#segment).                |
+
+### Segment
+
+| # Bytes | Version | Name               | Description                                                               |
+| :-------|:--------|:-------------------|:--------------------------------------------------------------------------|
 | 1       |         | Segment Type       | 2 = a part of the path (normally a sub-folder name), 4 = the file name.   |
 | V       |         | Segment Text       | Either a path or the file name (UTF-16LE with 4 byte length field).       |
