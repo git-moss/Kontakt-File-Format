@@ -6,13 +6,15 @@ All numbers are stored little-endian.
 
 ## Container Item
 
+The file starts with a Container Item.
+
 | # Bytes | Name         | Description                                                           |
 | :-------|:-------------|:----------------------------------------------------------------------|
 | 8       | Size         | The size of the whole item incl. the size bytes themselves, which means the data content is the size minus 8. E.g. for the root item this is the size of the whole file. |
 | 4       | Version      | Version check for NI Sound v1 (1)                                     |
 | 4       | Domain ID    | Magic char[4](le) 'nish' (Native Instruments Sound Header)            |
-| 4       | Header Flags | Currently only uses 'deferred' as a flag.                             |
 | 4       | **TODO**     | **TODO**   always 0?                                                  |
+| 4       | Header Flags | Currently only uses 'deferred' as a flag.                             |
 | 16      | UUID         | Universally Unique Identifier (UUID) for this item.                   |
 | V       | Chunk List   | All chunks related to this item.                                      |
 | 4       | Version      | The version (a number) of the child item format.                      |
@@ -21,12 +23,12 @@ All numbers are stored little-endian.
 
 ## Container Child Item
 
-| # Bytes | Name        | Description                                                                 |
-| :-------|:------------|:----------------------------------------------------------------------------|
-| 4       | **TODO**    |     Seen 0, 1, 2 and 1001                                                   |
-| 4       | Domain ID   | 4 ASCII characters identifying the domain to which the data belongs.        |
-| 4       | Chunk type  | The ID of the chunk type. The list of known chunk types can be found below. |
-| V       | Item        | The Container Item structure of the child item.                             |
+| # Bytes | Name          | Description                                                                 |
+| :-------|:--------------|:----------------------------------------------------------------------------|
+| 4       | Sibling Index | The index of the child.                                                     |
+| 4       | Domain ID     | 4 ASCII characters identifying the domain to which the data belongs.        |
+| 4       | Chunk type    | The ID of the chunk type. The list of known chunk types can be found below. |
+| V       | Item          | The Container Item structure of the child item.                             |
 
 ## Container Chunk
 
@@ -56,7 +58,7 @@ a terminal chunk.
 | 104     | Binary Chunk Item                                                                     |
 | 106     | Authorization                                                                         |
 | 108     | [Soundinfo](#soundinfo-chunk). Some metadata about the 'sound'.                       |
-| 109     | [Preset Data](#preset-data-chunk) contains the actual preset data.                    |
+| 109     | [Preset Chunk Item](#preset-chunk-item) contains the actual preset data.              |
 | 110     | External File Reference                                                               |
 | 111     | Resources                                                                             |
 | 112     | Audio Sample Item                                                                     |
@@ -73,19 +75,19 @@ a terminal chunk.
 
 ## Additional Chunk Data
 
-The following tables describe the additional data of the different chunk types.
+The following tables describe the additional data of the chunk types which are related to Kontakt.
 
 ### Authoring Application Chunk
 
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
 | 4       | Version       | The version of the format used by the specific chunk type.                  |
-| 1       | Prop. version | Property version?                                                           |
-| 4       | Application   | The ID of the [authoring application](#authoring-application-ids) which created this file. |
-| 4       | **TODO**      | **TODO**                                                                    |
-| V       | App. Version  | The version of the authoring application which created the file.            |
+| 1       | Compressed    | Is the data compressed?                                                     |
+| 4       | Application   | The ID of the [authoring application](#authoring-application-ids) which created this file.|
+| 4       | **TODO**      | Always 1.                                                                   |
+| V       | App. Version  | The version of the authoring application which created the file (UTF-16LE with 4 byte length field).|
 
-### Preset Data Chunk
+### Preset Chunk Item
 
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
@@ -94,7 +96,7 @@ The following tables describe the additional data of the different chunk types.
 | 4       | **TBC**       | **TBC** Number of items in the Dictionary.                                  |
 | 4       | Item Size     | The size of the item.                                                       |
 | 4       | **TODO**      | **TODO**   00 00 00 00     does this belong to the size?                    |
-| V       | Data          | The data of the preset.                                                     |
+| V       | Data          | The data of the preset. The content depends on the specfic preset.          |
 | 4       | End Padding   | **TBC** 00 00 00 00                                                         |
 | 4       | Checksum      | **TBC**                                                                     |
 
@@ -103,9 +105,9 @@ The following tables describe the additional data of the different chunk types.
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
 | 4       | Version       | The version of the format used by the specific chunk type.                  |
-| 4       | Sound Version | The version of the sound format.                                            |
-| 4       | Magic number  | **TODO**                                                                    |
-| 4       | Repo. Type    | The type of the repository. **TODO**                                        |
+| 4       | Sound Version | The version of the NI sound format.                                         |
+| 4       | Repo. Magic   | The magic number of the repository.                                         |
+| 4       | Repo. Type    | The type of the repository.                                                 |
 | 42      | **TODO**      | **TODO**                                                                    |
 
 ### Soundinfo Chunk
@@ -141,7 +143,7 @@ The following tables describe the additional data of the different chunk types.
 | 1       | Is Compressed | 1 if the item data is compressed otherwise 0.                               |
 | 4       | Size uncompr. | The size of the uncompressed item data.                                     |
 | 4       | Size compr.   | The size of the compressed item data. 0 if data is not compressed.          |
-| V       | Item Data     | The un-/compressed data. Compression uses [FastLZ](https://ariya.github.io/FastLZ/) |
+| V       | Item Data     | The un-/compressed data. Compression uses [FastLZ](https://ariya.github.io/FastLZ/). The uncompressed data is another [Container Item](#container-item). |
 
 ### Terminator Chunk
 

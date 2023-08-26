@@ -75,7 +75,7 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 16      | **TODO**       | **TODO**                                                                             |
 | 4       | Icon           | The icon of the instrument ([list of icon IDs](./Icons.md)).                         |
 | 9       | Author         | The author of the instrument (ISO Latin Alphabet ISO_8859_1). Null terminated.       |
-| 2       | **TODO**       | **TODO**                                                                             |
+| 2       | **TODO**       | **TODO** Found values 0, 3, 4                                                        |
 | 87      | Web Link       | A URL to the website of the creator (ISO Latin Alphabet ISO_8859_1). Null terminated.|
 | 2       | **TODO**       | **TODO**                                                                             |
 | 4       | **TODO**       | **TODO**                                                                             |
