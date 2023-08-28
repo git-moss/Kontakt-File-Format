@@ -15,7 +15,14 @@ The top data structure is one or more Preset Chunks which are simply appended to
 ## Default Data Section
 
 Most of the chunks have the following format but there are some exceptions which need to be parsed individually.
-The ones marked with 'Y' in the [Preset Chunk IDs](#preset-chunk-ids) table can be parsed normally. If there is a 'N' the format is described in a specific section below. If there is no comment, it is not yet researched.
+The column *Data Section* in the [Preset Chunk IDs](#preset-chunk-ids) table comments on that:
+
+- [Structured](#structured-data-section): it can be parsed normally.
+- [List A/B](#list-A/B-data-section): A list of inner preset chunk structures.
+- **Flat**: Simply read the full data, the specific format is described in a section for the type below.
+- **No comment**: not yet researched.
+
+### Structured Data Section
 
 | # Bytes | Name          | Description                                                                    |
 | :-------|:--------------|:-------------------------------------------------------------------------------|
@@ -27,9 +34,24 @@ The ones marked with 'Y' in the [Preset Chunk IDs](#preset-chunk-ids) table can 
 | 4       | Children Size | The size of the 2nd data block (public data block).                            |
 | V       | Children Data | This are again 1 or more Preset Chunks.                                        |
 
+### List A/B Data Section
+
+| # Bytes | Name          | Description                                                                    |
+| :-------|:--------------|:-------------------------------------------------------------------------------|
+| 4       | Array Length  | The number of items in the array.                                              |
+| V       | Items         | *Array Length* items.                                                          |
+
+### List A/B Item
+
+| # Bytes | Name          | Description                                                                    |
+| :-------|:--------------|:-------------------------------------------------------------------------------|
+| 4       | Array Length  | The number of items in the array.                                              |
+| 4       | **TODO**      | An additional value (only List B) before each item (meaning unknown **TODO**). |
+| V       | Item Data     | A [Structured](#structured-data-section) item.                                 |
+
 ## Preset Chunk IDs
 
-| # ID    | Name                  | Description                                     | Default Data Section |
+| # ID    | Name                  | Description                                     | Data Section         |
 | :-------|:----------------------|:------------------------------------------------|:---------------------|
 | 0x00    | BParModBase           |                                                 |                      |
 | 0x01    | BAutomationObject     |                                                 |                      |
@@ -37,7 +59,7 @@ The ones marked with 'Y' in the [Preset Chunk IDs](#preset-chunk-ids) table can 
 | 0x03    | BBank                 |                                                 |                      |
 | 0x04    | BGroup                |                                                 |                      |
 | 0x05    | BLoop                 |                                                 |                      |
-| 0x06    | BParScript            |                                                 | Y                    |
+| 0x06    | BParScript            |                                                 | Structured           |
 | 0x07    | BParEnv               |                                                 |                      |
 | 0x08    | BParLFO               |                                                 |                      |
 | 0x09    | BParArp               |                                                 |                      |
@@ -54,7 +76,7 @@ The ones marked with 'Y' in the [Preset Chunk IDs](#preset-chunk-ids) table can 
 | 0x14    | BParFXPhaser          |                                                 |                      |
 | 0x15    | BParFXReverb          |                                                 |                      |
 | 0x16    | BParFXIRC             |                                                 |                      |
-| 0x17    | BParFXSendLevels      |                                                 | Y                    |
+| 0x17    | BParFXSendLevels      |                                                 | Structured           |
 | 0x18    | BParFXFilter          |                                                 |                      |
 | 0x19    | BParFXCompressor      |                                                 |                      |
 | 0x20    | BParFXLoFi            |                                                 |                      |
@@ -70,10 +92,10 @@ The ones marked with 'Y' in the [Preset Chunk IDs](#preset-chunk-ids) table can 
 | 0x22    | BParFXRotator         |                                                 |                      |
 | 0x23    | BParFXTwang           |                                                 |                      |
 | 0x24    | BParFXCabinet         |                                                 |                      |
-| 0x25    | BParFX                |                                                 | N                    |
+| 0x25    | BParFX                |                                                 | Flat                 |
 | 0x26    | BDyxMorphGroup        |                                                 |                      |
 | 0x27    | BDyxMorphMap          |                                                 |                      |
-| 0x28    | Program               | A Kontakt instrument program.                   | Y                    |
+| 0x28    | Program               | A Kontakt instrument program.                   | Structured           |
 | 0x29    | BProgramContainer     |                                                 |                      |
 | 0x2a    | BSample               |                                                 |                      |
 | 0x2b    | VoiceGroup            |                                                 |                      |
@@ -82,18 +104,18 @@ The ones marked with 'Y' in the [Preset Chunk IDs](#preset-chunk-ids) table can 
 | 0x2e    | BZoneArraySer         |                                                 |                      |
 | 0x2f    | BGroupCompleteSer     |                                                 |                      |
 | 0x30    | PresetImpl            |                                                 |                      |
-| 0x32    | VoiceGroups           |                                                 | Y                    |
-| 0x33    | GroupList             |                                                 | N                    |
-| 0x34    | ZoneList              | A list with all sample zones.                   | N                    |
+| 0x32    | VoiceGroups           |                                                 | Structured           |
+| 0x33    | GroupList             |                                                 | List A               |
+| 0x34    | ZoneList              | A list with all sample zones.                   | List B               |
 | 0x35    | PrivateRawObject      |                                                 |                      |
 | 0x36    | ProgramList           |                                                 |                      |
 | 0x37    | SlotList              |                                                 |                      |
 | 0x38    | StarCritList          |                                                 |                      |
-| 0x39    | LoopArray             | A loop for a zone.                              | N                    |
-| 0x3a    | BParameterArraySer8   |                                                 | Y                    |
-| 0x3b    | BParameterArraySer16  |                                                 | N                    |
+| 0x39    | LoopArray             | A loop for a zone.                              | Flat                 |
+| 0x3a    | BParameterArraySer8   |                                                 | Structured           |
+| 0x3b    | BParameterArraySer16  |                                                 | Flat                 |
 | 0x3c    | BParameterArraySer32  |                                                 |                      |
-| 0x3d    | FileNameList          |                                                 | N                    |
+| 0x3d    | FileNameList          |                                                 | Flat                 |
 | 0x3e    | BOutputConfiguration  |                                                 |                      |
 | 0x3f    | BParEnv_AHDSR         |                                                 |                      |
 | 0x40    | BParEnv_FM7           |                                                 |                      |
@@ -101,16 +123,16 @@ The ones marked with 'Y' in the [Preset Chunk IDs](#preset-chunk-ids) table can 
 | 0x42    | BParFXTape            |                                                 |                      |
 | 0x43    | BParFXTrans           |                                                 |                      |
 | 0x44    | BParFXSSLGEQ          |                                                 |                      |
-| 0x45    | BInsertBus            |                                                 | Y                    |
+| 0x45    | BInsertBus            |                                                 | Structured           |
 | 0x46    | BParFXSSLGBusComp     |                                                 |                      |
-| 0x47    | SaveSettings          |                                                 | Y                    |
+| 0x47    | SaveSettings          |                                                 | Structured           |
 | 0x48    | PrivateRawObject      |                                                 |                      |
 | 0x49    | PrivateRawObject      |                                                 |                      |
 | 0x4a    | BParGroupDynamics     |                                                 |                      |
-| 0x4b    | FileNameListEx        |                                                 | N                    |
+| 0x4b    | FileNameListEx        |                                                 | Flat                 |
 | 0x4c    | BParFXFBComp          |                                                 |                      |
 | 0x4d    | BParFXJump            |                                                 |                      |
-| 0x4e    | QuickBrowseData       |                                                 | Y                    |
+| 0x4e    | QuickBrowseData       |                                                 | Structured           |
 | 0x4f    | BSnapshot             |                                                 |                      |
 | 0x50    | BGroupSnapshot        |                                                 |                      |
 | 0x51    | BSnapshotMetaData     |                                                 |                      |
@@ -181,6 +203,26 @@ The following format is the full data section of the Preset Chunk. This Preset C
 | V       | Block 2 Data       | The data of the 2nd block. Here is the relevant data.                               |
 | 4       | Children Size      | The size of the 2nd data block (public data block).                                 |
 | V       | Children Data      | This are again 1 or more Preset Chunks.                                             |
+
+### Group
+
+| # Bytes | Name               | Description                                                                         |
+| :-------|:-------------------|:------------------------------------------------------------------------------------|
+| V       | Group Name         | The name of the group (UTF-16LE with 4 byte length field).                          |
+| 4       | Volume             | The volume, 0.0dB = 1.0, 0.015625 = -36dB, 64 = +36dB (float).                      |
+| 4       | Panorama           | The panorama in the range of [-1..1] (float)                                        |
+| 4       | Tune               | The tune setting in the range of [-32..32] semitones which is returned as 2^octave which maps to the range [0.125, 8.0], 2^(-32/12) = 0.125 (float). |
+| 1       | Key Tracking       | Is key tracking enabled?                                                            |
+| 1       | Playback Reverse   | Is reverse playback enabled.                                                        |
+| 1       | Release Trigger    | Is triggered on release?                                                            |
+| 1       | Rel. Tr. Monophonic| Is the release trigger monophonic?                                                  |
+| 1       | Rel. Tr. Counter   | Value of the release trigger counter.                                               |
+| 2       | MIDI Channel       | The MIDI channel, -1 if not set.                                                    |
+| 4       | Voice Group Index  | The index of the voice group., -1 if not set.                                       |
+| 4       | FX Idx Ampl. Split | The FX index amplitude split point.                                                 |
+| 1       | Muted              | Is the group muted?                                                                 |
+| 1       | Soloed             | Is the group soloed?                                                                |
+| 4       | Interpolation Qual.| The interpolation quality.                                                          |
 
 ### Zone
 
