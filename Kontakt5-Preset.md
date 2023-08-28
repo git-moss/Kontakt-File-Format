@@ -89,7 +89,7 @@ The ones marked with 'Y' in the [Preset Chunk IDs](#preset-chunk-ids) table can 
 | 0x36    | ProgramList           |                                                 |                      |
 | 0x37    | SlotList              |                                                 |                      |
 | 0x38    | StarCritList          |                                                 |                      |
-| 0x39    | LoopArray             |                                                 |                      |
+| 0x39    | LoopArray             | A loop for a zone.                              | N                    |
 | 0x3a    | BParameterArraySer8   |                                                 | Y                    |
 | 0x3b    | BParameterArraySer16  |                                                 | N                    |
 | 0x3c    | BParameterArraySer32  |                                                 |                      |
@@ -184,7 +184,7 @@ The following format is the full data section of the Preset Chunk. This Preset C
 
 ### Zone
 
-This is the *Block 2 Data* of a *Zone List*. This structure is slight different for certain versions (version attribute of a Zone List). If no specific version is noted for an attribute it is present in all versions.
+This is the *Block 2 Data* of a *Zone List*. This structure is slightly different for certain versions (version attribute of a Zone List). If no specific version is noted for an attribute it is present in all versions.
 
 | # Bytes | Version | Name               | Description                                                               |
 | :-------|:--------|:-------------------|:--------------------------------------------------------------------------|
@@ -221,26 +221,75 @@ This is the *Block 2 Data* of a *Zone List*. This structure is slight different 
 
 The following format is used in the *Block 2 Data* section of a Preset Chunk. This chunk is normally among the top chunks.
 
-| # Bytes | Version | Name               | Description                                                               |
-| :-------|:--------|:-------------------|:--------------------------------------------------------------------------|
-| 2       | Ex only | Ex-Version         | The version of the Ex data. Should be 2.                                  |
-| 4       | Ex only | **TODO**           | **TODO**                                                                  |
-| 4       |         | Version            | The version of the data. Should be 0 or 1.                                |
-| V       | 1       | NKR file           | One [Segment Block](#segment-block) containing a NKR file.                |
-| 4       | 1       | **TODO**           | **TODO** Padding?                                                         |
-| 4       |         | File Count         | The number of files in the list.                                          |
-| V       |         | Segments           | For each file follows one [Segment Block](#segment-block).                |
+### Preset Chunk - Filename List (0x3D)
+
+| # Bytes | Name               | Description                                                                         |
+| :-------|:-------------------|:------------------------------------------------------------------------------------|
+| 4       | Version            | The version of the data. Always 0.                                                  |
+| 4       | File Count         | The number of files in the list.                                                    |
+| V       | Segments           | For each file follows one [Segment Block](#segment-block).                          |
+| V       | File Timestamps    | For each file follows one [Timestamp Block](#timestamp-block).                      |
+| 4       | Padding            | Always 0.                                                                           |
+
+### Filename List Ex (0x4B)
+
+This is similar to 0x3D but with more options and parameters.
+
+| # Bytes | Name               | Description                                                                         |
+| :-------|:-------------------|:------------------------------------------------------------------------------------|
+| 2       | Version            | The version of the Ex data. Always 2.                                               |
+| 4       | File Category      | The file category: 1 = File or Folder, 2 = NKR file  **TODO**                       |
+| 4       | Type (o)           | If it is not 0 it indicates a special file, e.g. NKR.                               |
+| V       | E.g. NKR file (o)  | One [Segment Block](#segment-block) containing a NKR file or a folder.              |
+| 4       | Version            | The version of the data. Always 0.                                                  |
+| 4       | File Count         | The number of files in the list.                                                    |
+| V       | Segments           | For each file follows one [Segment Block](#segment-block).                          |
+| V       | File Timestamps    | For each file follows one [Timestamp Block](#timestamp-block).                      |
+| 4       | Padding            | Always 0.                                                                           |
+| V       | **TODO** (o)       | There is 1 integer for each file. The file at the last index is set to 0, 1, 2 or 3. All others seem to be always 0.|
+| V       | NKI filename (o)   | The full path of the NKI file.                                                      |
+| **TODO**| **TODO**           | There is more data for reverb samples (and maybe wallpaper). **TODO**               |
+| 2       | End                | Always 1.                                                                           |
 
 ### Segment Block
 
-| # Bytes | Version | Name               | Description                                                               |
-| :-------|:--------|:-------------------|:--------------------------------------------------------------------------|
-| 4       |         | Segment Count      | The number of segments of the path.                                       |
-| V       |         | Segment            | For each segment follows one [Segment](#segment).                |
+| # Bytes | Name               | Description                                                               |
+| :-------|:-------------------|:--------------------------------------------------------------------------|
+| 4       | Segment Count      | The number of segments of the path.                                       |
+| V       | Segment            | For each segment follows one [Segment](#segment).                |
 
 ### Segment
 
-| # Bytes | Version | Name               | Description                                                               |
-| :-------|:--------|:-------------------|:--------------------------------------------------------------------------|
-| 1       |         | Segment Type       | 2 = a part of the path (normally a sub-folder name), 4 = the file name.   |
-| V       |         | Segment Text       | Either a path or the file name (UTF-16LE with 4 byte length field).       |
+| # Bytes | Name               | Description                                                               |
+| :-------|:-------------------|:--------------------------------------------------------------------------|
+| 1       | Segment Type       | 2 = a part of the path (normally a sub-folder name), 4 = the file name.   |
+| V       | Segment Text       | Either a path or the file name (UTF-16LE with 4 byte length field).       |
+
+### Timestamp Block
+
+| # Bytes | Name               | Description                                                               |
+| :-------|:-------------------|:--------------------------------------------------------------------------|
+| 4       | Last change        | The timestamp of the last change of the file. Unix-Timestamp UTC+1.       |
+| 4       | Padding            | Always 0.                                                                 |
+
+## Preset Chunk - Loop Array (0x39)
+
+The following format is used in the *Block 2 Data* section of a Preset Chunk. This chunk is a child chunk of a zone chunk.
+
+| # Bytes | Name               | Description                                                               |
+| :-------|:-------------------|:--------------------------------------------------------------------------|
+| 2       | Number of loops    | The number of loops for the zone (1-8).                                   |
+| 2       | **TODO**           | Seems to be always 0x60.                                                  |
+| V       | Loops              | The data of 0 to 8 loops.                                                 |
+
+### Loop Data
+
+| # Bytes | Name               | Description                                                               |
+| :-------|:-------------------|:--------------------------------------------------------------------------|
+| 4       | Mode               | The loop mode. 0x1: Until End, 0x1006000: Until End <->, 0x0: Until Release, 0x3F80: Until Release <->, 0x80000001: Oneshot|
+| 4       | Loop Start         | The start of the loop in samples.                                         |
+| 4       | Loop Length        | The length of the loop in samples.                                        |
+| 4       | Loop Count         | How often the loop should be repeated.                                    |
+| 1       | Alternating        | 1 if the loop is alternating.                                             |
+| 4       | Tuning             | The tuning of the loop.                                                   |
+| 4       | Crossfade Length   | The length of the crossfade in samples.                                   |
