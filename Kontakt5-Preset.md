@@ -46,7 +46,7 @@ The column *Data Section* in the [Preset Chunk IDs](#preset-chunk-ids) table com
 | # Bytes | Name          | Description                                                                    |
 | :-------|:--------------|:-------------------------------------------------------------------------------|
 | 4       | Array Length  | The number of items in the array.                                              |
-| 4       | **TODO**      | An additional value (only List B) before each item (meaning unknown **TODO**). |
+| 4       | Reference     | A reference value (only List B) before each item, e.g. a group index for zones.|
 | V       | Item Data     | A [Structured](#structured-data-section) item.                                 |
 
 ## Preset Chunk IDs

@@ -12,6 +12,7 @@ as common sense.
   https://github.com/monomadic/ni-file
 * Maxton wrote a tool to extract NKX files which can be found here: https://github.com/maxton/nkxtract
 * Jimi Ford wrote another NKX extractor which can also handle NKS archives: https://github.com/JimiHFord/unnks
+* ASTN on KVR documented the NCW format: https://www.kvraudio.com/forum/viewtopic.php?t=537033
 
 Let's start with the known file types used by Kontakt:
 
