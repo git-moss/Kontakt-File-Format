@@ -263,14 +263,15 @@ This is the *Block 2 Data* of a *Zone List*. This structure is slightly differen
 
 The following format is used in the *Block 2 Data* section of a Preset Chunk. This chunk is normally among the top chunks.
 
-### Preset Chunk - Filename List (0x3D)
+### Filename List (0x3D)
 
 | # Bytes | Name               | Description                                                                         |
 | :-------|:-------------------|:------------------------------------------------------------------------------------|
-| 4       | Version            | The version of the data. Always 0.                                                  |
+| 4       | Version            | The version of the data. Known values are 0 and 1.                                  |
+| V       | Source Folder      | (only version 1) The absolute path to the original folder where the NKI file was created. In the format of a [Segment Block](#segment-block). |
 | 4       | File Count         | The number of files in the list.                                                    |
-| V       | Segments           | For each file follows one [Segment Block](#segment-block).                          |
-| V       | File Timestamps    | For each file follows one [Timestamp Block](#timestamp-block).                      |
+| V       | Segments           | For each file there is one [Segment Block](#segment-block).                         |
+| V       | File Timestamps    | For each file there is one [Timestamp Block](#timestamp-block).                     |
 | 4       | Padding            | Always 0.                                                                           |
 
 ### Filename List Ex (0x4B)
@@ -280,18 +281,42 @@ This is similar to 0x3D but with more options and parameters.
 | # Bytes | Name               | Description                                                                         |
 | :-------|:-------------------|:------------------------------------------------------------------------------------|
 | 2       | Version            | The version of the Ex data. Always 2.                                               |
-| 4       | File Category      | The file category: 1 = File or Folder, 2 = NKR file  **TODO**                       |
-| 4       | Type (o)           | If it is not 0 it indicates a special file, e.g. NKR.                               |
-| V       | E.g. NKR file (o)  | One [Segment Block](#segment-block) containing a NKR file or a folder.              |
-| 4       | Version            | The version of the data. Always 0.                                                  |
-| 4       | File Count         | The number of files in the list.                                                    |
-| V       | Segments           | For each file follows one [Segment Block](#segment-block).                          |
-| V       | File Timestamps    | For each file follows one [Timestamp Block](#timestamp-block).                      |
-| 4       | Padding            | Always 0.                                                                           |
-| V       | **TODO** (o)       | There is 1 integer for each file. The file at the last index is set to 0, 1, 2 or 3. All others seem to be always 0.|
-| V       | NKI filename (o)   | The full path of the NKI file.                                                      |
-| **TODO**| **TODO**           | There is more data for reverb samples (and maybe wallpaper). **TODO**               |
-| 2       | End                | Always 1.                                                                           |
+| V       | Special Files      | See [Special Files Block](#special-files-block).                                    |
+| 4       | File Count         | The number of sample files in the list.                                             |
+| V       | Segments           | For each file there is one [Segment Block](#segment-block).                         |
+| V       | File Timestamps    | For each file there is one [Timestamp Block](#timestamp-block).                     |
+| V       | **TODO**           | There is 1 integer for each file. The file at the last index is set to 0, 1, 2 or 3. All others seem to be always 0.|
+| V       | Other Files        | See [Other Files Block](#other-files-block).                                        |
+
+### Special Files
+
+A number of additional files like resource files or folder information:
+
+| # Bytes | Name               | Description                                                                         |
+| :-------|:-------------------|:------------------------------------------------------------------------------------|
+| 4       | Type (o)           | The type ID.                                                                        |
+| V       | File/folder(s)     | One or more [Segment Blocks](#segment-block) containing a file or a folder.         |
+
+The following table shows the known Types as well as how many files/folders are expected and there might be more special file sections to follow:
+
+| # Type  | Last entry?  | # of file/folder(s) | File/Folder(s)                                                |
+| :-------|:-------------|:--------------------|:--------------------------------------------------------------|
+| 0       | Yes          | 1                   | Absolute source path.                                         |
+| 1       | Yes          | 1                   | Absolute monolith source path.                                |
+| 2       | Yes          | 2                   | Resource file (*.nkr), resource folder.                       |
+| 3       | No           | 1                   | Resource file (*.nkr).                                        |
+
+### Other Files
+
+This block is identical to the special files block but with different file/folder Types:
+
+| # Type  | Last entry?  | # of file/folder(s) | File/Folder(s)                                                |
+| :-------|:-------------|:--------------------|:--------------------------------------------------------------|
+| 0       | Yes          | 0                   | -                                                             |
+| 1       | Yes          | 0                   | -                                                             |
+| 2       | No           | 1                   | NKI filename.                                                 |
+| 3       | No           | 2                   | NKI filename, wallpaper file name.                            |
+| 7       | No           | 1                   | Impulse response file name.                                   |
 
 ### Segment Block
 
