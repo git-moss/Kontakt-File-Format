@@ -33,3 +33,5 @@ There are 29 icons.
 | 1A   | Oboe            |
 | 1B   | Saxophone       |
 | 1C   | New             |
+
+There are additional icons which result from imported sounds (<= Kontakt 5), e.g. 0x29 is a Reason symbol.

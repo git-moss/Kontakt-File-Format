@@ -56,7 +56,7 @@ a terminal chunk.
 | 102     | Bank Container                                                                        |
 | 103     | Preset Container                                                                      |
 | 104     | Binary Chunk Item                                                                     |
-| 106     | Authorization                                                                         |
+| 106     | [Authorization](#authorization-chunk).                                                |
 | 108     | [Soundinfo](#soundinfo-chunk). Some metadata about the 'sound'.                       |
 | 109     | [Preset Chunk Item](#preset-chunk-item) contains the actual preset data.              |
 | 110     | External File Reference                                                               |
@@ -86,6 +86,16 @@ The following tables describe the additional data of the chunk types which are r
 | 4       | Application   | The ID of the [authoring application](#authoring-application-ids) which created this file.|
 | 4       | **TODO**      | Always 1.                                                                   |
 | V       | App. Version  | The version of the authoring application which created the file (UTF-16LE with 4 byte length field).|
+
+### Authorization Chunk
+
+| # Bytes | Name          | Description                                                                 |
+| :-------|:--------------|:----------------------------------------------------------------------------|
+| 4       | Version       | The version of the format used by the specific chunk type.                  |
+| 4       | **TODO**      | **TODO**                                                                    |
+| 4       | **TODO**      | **TODO**                                                                    |
+| 4       | **TODO**      | **TODO**                                                                    |
+| V       | Serial        | The serial number of the sound (UTF-16LE with 4 byte length field).         |
 
 ### Preset Chunk Item
 
