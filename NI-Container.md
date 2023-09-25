@@ -12,7 +12,7 @@ The file starts with a Container Item.
 | :-------|:-------------|:----------------------------------------------------------------------|
 | 8       | Size         | The size of the whole item incl. the size bytes themselves, which means the data content is the size minus 8. E.g. for the root item this is the size of the whole file. |
 | 4       | Version      | Version check for NI Sound v1 (1)                                     |
-| 4       | Domain ID    | Magic char[4](le) 'nish' (Native Instruments Sound Header)            |
+| 4       | Domain ID    | Magic 4 characters 'nish' (Native Instruments Sound Header)           |
 | 4       | **TODO**     | **TODO**   always 0?                                                  |
 | 4       | Header Flags | Currently only uses 'deferred' as a flag.                             |
 | 16      | UUID         | Universally Unique Identifier (UUID) for this item.                   |
