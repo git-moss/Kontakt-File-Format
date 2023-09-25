@@ -40,6 +40,7 @@ Let's start with the known file types used by Kontakt:
 
 * [Kontakt 1](./Kontakt-File-Format.md#kontakt-1---nki-format)
 * [Kontakt 1.5](./Kontakt-File-Format.md#kontakt-15---nki-format)
-* [Kontakt 2 - 4.1](./Kontakt-File-Format.md#kontakt-2---41x---nki-format)
-* [Kontakt 2 - 4.1 Monolith](./Kontakt-File-Format.md#kontakt-2---41x---nki-monolith-format)
+* [Kontakt 2 - 4.1.x](./Kontakt-File-Format.md#kontakt-2---41x---nki-format)
+* [Kontakt 2 - 4.1.x Monolith](./Kontakt-File-Format.md#kontakt-2---41x---nki-monolith-format)
+* [Kontakt 4.2.x](./Kontakt-File-Format.md#kontakt-42x---nki-format)
 * [Kontakt 5 - 7](./Kontakt-File-Format.md#kontakt-5-6-and-7)
