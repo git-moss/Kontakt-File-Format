@@ -17,7 +17,7 @@ Let's start with the known file types used by Kontakt:
 
 | File Ending    | Since | Content                                                                            |
 |:---------------|:------|------------------------------------------------------------------------------------|
-| **.nki**       | 1.0   | *Native Instruments Kontakt Instrument*. It contains one Instrument. It can also optionally contain the samples the .nki refers to; this is called a *monolith* file. |
+| **.nki**       | 1.0   | [*Native Instruments Kontakt Instrument*](#known-kontakt-file-formats). It contains one Instrument. It can also optionally contain the samples the .nki refers to; this is called a *monolith* file. |
 | **.nkm**       | 1.0   | *Native Instruments Multi*. Contains multiple .nki's (up to 64) and .nkb's.        |
 | **.nkp**       | 1.0   | *Native Instruments Kontakt Module Preset*. All Kontakt modules can have their own presets. |
 | **.nkb**       | 2.0   | *Native Instruments Kontakt Bank*. Groups several instruments as a bank which can be addressed with different MIDI channels and program changes. |
@@ -38,8 +38,8 @@ Let's start with the known file types used by Kontakt:
 
 # Known Kontakt File Format(s)
 
-[Kontakt 1](./Kontakt-File-Format.md#kontakt-1---nki-format)
-[Kontakt 1.5](./Kontakt-File-Format.md#kontakt-15---nki-format)
-[Kontakt 2 - 4.1](./Kontakt-File-Format.md#kontakt-2---41x---nki-format)
-[Kontakt 2 - 4.1 Monolith](./Kontakt-File-Format.md#kontakt-2---41x---nki-monolith-format)
-[Kontakt 5 - 7](./Kontakt-File-Format.md#kontakt-5-6-and-7)
+* [Kontakt 1](./Kontakt-File-Format.md#kontakt-1---nki-format)
+* [Kontakt 1.5](./Kontakt-File-Format.md#kontakt-15---nki-format)
+* [Kontakt 2 - 4.1](./Kontakt-File-Format.md#kontakt-2---41x---nki-format)
+* [Kontakt 2 - 4.1 Monolith](./Kontakt-File-Format.md#kontakt-2---41x---nki-monolith-format)
+* [Kontakt 5 - 7](./Kontakt-File-Format.md#kontakt-5-6-and-7)
