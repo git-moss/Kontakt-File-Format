@@ -1,48 +1,9 @@
-# Kontakt File Format(s)
-
-Kontakt is a sampler from Native Instruments which uses a plethora of file formats which all are sadly proprietary
-and therefore no documentation is publicly available. This documentation tries to collect different pieces of
-information which are already available on the internet and adds some findings based on trial and error as well
-as common sense.
-
-* Christian Schoenebeck from LinuxSampler found out about the ZLIB encoding of the instrument description and wrote
-  tool which can export and import the human readable XML file from and to Kontakt .nki instrument        *
-  files (Kontakt formats v1 to v4 are supported): http://www.linuxsampler.org/nkitool/
-* Monomadic works on understanding the Kontakt 5+ formats and first findings are here: 
-  https://github.com/monomadic/ni-file
-* Maxton wrote a tool to extract NKX files which can be found here: https://github.com/maxton/nkxtract
-* Jimi Ford wrote another NKX extractor which can also handle NKS archives: https://github.com/JimiHFord/unnks
-* ASTN on KVR documented the NCW format: https://www.kvraudio.com/forum/viewtopic.php?t=537033
-
-Let's start with the known file types used by Kontakt:
-
-| File Ending    | Since | Content                                                                            |
-|:---------------|:------|------------------------------------------------------------------------------------|
-| **.nki**       | 1.0   | *Native Instruments Kontakt Instrument*. It contains one Instrument. It can also optionally contain the samples the .nki refers to; this is called a *monolith* file. |
-| **.nkm**       | 1.0   | *Native Instruments Multi*. Contains multiple .nki's (up to 64) and .nkb's.        |
-| **.nkp**       | 1.0   | *Native Instruments Kontakt Module Preset*. All Kontakt modules can have their own presets. |
-| **.nkb**       | 2.0   | *Native Instruments Kontakt Bank*. Groups several instruments as a bank which can be addressed with different MIDI channels and program changes. |
-| **.nkg**       | ?     | The information of about a Kontakt Group (can be ex-/imported from the groups area in Kontakt). |
-| **.ncw**       | 4     | A lossless compressed sample. Can be un-/compressed with the Kontakt Batch Compress dialog. |
-| **.nkx**       | 2.1   | Monolith file format which only contains samples. NKX files are the Kontakt Player 2 version of monolithic sample containers (formerly called NKS files). |
-| **.nkc**       | 2.1   | Kontakt Cache File. Libraries are downloaded and delivered in .nkc encrypted format. NKC files save a content overview of monolithic sample containers (NKS / NKX) and are stored next to the monolith files. |
-| **.nkr**       | 4.2   | A resource container. Contains helper resources for a Kontakt script. Configured in the Instrument settings of a Kontakt instrument. |
-
-## Abbreviations
-
-| Abbreviation  | Meaning                                |
-|:--------------|:---------------------------------------|
-| **TODO**      | Not looked into yet or simply no idea. |
-| **TBC**       | Good guess but not confirmed yet.      |
-| **V**         | Variable length.                       |
-| **BE**        | Big-endian. The most significant byte is at the smallest memory address and the least significant byte at the largest. |
-
-## Kontakt 1 - NKI Format
+# Kontakt 1 - NKI Format
 
 | # Bytes | Name        | Description                                                         |
 | :-------|:------------|:--------------------------------------------------------------------|
 | 4       | File ID     | 5E E5 6E B3 - Identifies the Kontakt 1 file format.                 |
-| 4       | ZLIB Start  | The number of bytes in the file where the ZLIB starts. Always 0x24. |
+| 4       | ZLIB Start  | The offset (number of bytes) in the file where the ZLIB starts. Always 0x24. |
 | 2       | **TODO**    | **TODO** always "50 00"                                             |
 | 1       | **TODO**    | **TODO** valid in the range of 00 - 03                              |
 | 9       | **TODO**    | **TODO** always 00                                                  |
@@ -52,17 +13,21 @@ Let's start with the known file types used by Kontakt:
 | 4       | **TODO**    | **TODO** always 00                                                  |
 | V       | Inst. data  | XML document with all the data of the instrument, ZLIB encoded with Compression Level 2 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
 
-## Kontakt 2 - 4.1.x - NKI Format
+# Kontakt 1.5 - NKI Format
+
+This is identical to the Kontakt 1 format except that it uses the *File ID* from the Kontakt 2 format. That means that it can be Big-Endian (BE) or Little-Endian (LE) as well. To differentiate from the real Kontakt 2 format one can check the *ZLIB Start* which is always 0x24 for Kontakt 1.
+
+# Kontakt 2 - 4.1.x - NKI Format
 
 The file can be stored in Big-Endian (BE) or Little-Endian (LE). This can be detected by the File ID.
 The number of bytes for a value (given in the 1st column below) need then be read/written either BE or LE.
 
-### Structure
+## Structure
 
 | # Bytes | Name           | Description                                                                 |
 | :-------|:---------------|:-------------------------------------------------------------------------------------|
 | 4       | File ID        | 12 90 A8 7F (BE) / 7F A8 90 12 (LE) - Identifies the Kontakt 2 file format.          |
-| 4       | ZLIB length    | The length of the ZLIB block (or FastLZ for Kontakt 4.2).                            |
+| 4       | Compressed length | The length of the compressed data block (ZLIB or FastLZ for Kontakt 4).           |
 | 2       | Header Version | Kontakt 2: "00 01" (BE) / "01 00" (LE) - 4.2: "10 01 (BE)"                           |
 | 4       | Patch Version  | K2: "72 2A 01 3E" (BE) / "3E 01 2A 72" (LE) - 4.2: "1A 63 37 EA (BE)"                |
 | 2       | Patch Type     | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 - NKI: "01 00" (BE) / "00 01" (LE)          |
@@ -86,7 +51,7 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 12      | SI Header      | **TODO** AE E1 0E B0 01 01 0C 00 D9 00 00 00 (BE)                                    |
 | V       | Soundinfo      | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database.      |
 
-## Kontakt 2 - 4.1.x - NKI Monolith Format
+# Kontakt 2 - 4.1.x - NKI Monolith Format
 
 The header up to the ZLIB section is identical to the non-monolith version. 
 Instead of the ZLIB section the monolith sample information starts.
@@ -123,7 +88,7 @@ Known types of Dictionary Item references:
 
 The known Dictionary Items are:
 
-#### Samples Reference
+### Samples Reference
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
@@ -132,7 +97,7 @@ The known Dictionary Items are:
 | 2       | Type      | 01 00                                                                                 |
 | 16      |	Content   | "Samples" tag. Text stored as UTF-16 null terminated.                                 |
 
-#### NKI-Filename
+### NKI-Filename
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
@@ -141,7 +106,7 @@ The known Dictionary Items are:
 | 2       | Type      | 03 00                                                                                 |
 | V       |	Content   | The NKI-Filename as UTF-16 Null-terminated.                                           |
 
-#### IR-Samples Reference
+### IR-Samples Reference
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
@@ -150,7 +115,7 @@ The known Dictionary Items are:
 | 2       | Type      | 01 00                                                                                 |
 | 16      |	Content   | "IR Samples" tag. Text stored as UTF-16 null terminated.                              |
 
-#### Sample
+### Sample
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
@@ -159,7 +124,7 @@ The known Dictionary Items are:
 | 2       | Type      | 02 00                                                                                 |
 | V       |	Content   | The original filename of the sample. Text stored as UTF-16 null terminated.           |
 
-#### Wallpaper Reference
+### Wallpaper Reference
 
 | # Bytes | Name           | Description                                                                      |
 | :-------|:---------------|:---------------------------------------------------------------------------------|
@@ -168,7 +133,7 @@ The known Dictionary Items are:
 | 2       | Type           | 01 00                                                                            |
 | 20      |	Content        | "Wallpaper" tag. Text stored as UTF-16 null terminated.                          |
 
-#### Wallpaper
+### Wallpaper
 
 | # Bytes | Name           | Description                                                                      |
 | :-------|:---------------|:---------------------------------------------------------------------------------|
@@ -177,7 +142,7 @@ The known Dictionary Items are:
 | 2       | Type           | 04 00                                                                            |
 | V       |	Content        | The original filename of the wallpaper. Text stored as UTF-16 null terminated.   |
 
-### Sample/IR-Sample Sections
+## Sample/IR-Sample Sections
 
 | # Bytes | Name           | Description                                                                      |
 | :-------|:---------------|:---------------------------------------------------------------------------------|
@@ -186,13 +151,13 @@ The known Dictionary Items are:
 | 4       | **TODO**       | **TBC** Offset to next WAV?                                                      |
 | V       | Sample Data    | The raw bytes from the original sample file.                                     |
 
-### Wallpaper Section
+## Wallpaper Section
 
 | # Bytes | Name           | Description                                                                      |
 | :-------|:---------------|:---------------------------------------------------------------------------------|
 | V       | Image Data     | Maybe here is a header before it, too.   **TODO**                                |
 
-### NKI Section
+## NKI Section
 
 The file ends with the NKI section.
 
@@ -201,10 +166,9 @@ The file ends with the NKI section.
 | 27      | Header         | Always "3C E6 16 49  10 01 00 00  00 00 FF 00  00 00 01 00  00 00 00 22  0D 00 00 00  00 00 00" |
 | V       | NKI            | The full data of a non-monolith NKI file. Even repeats the metadata.                  |
 
+# Kontakt 4.2.x - NKI Format
 
-## Kontakt 4.2.x - NKI Format
-
-### Structure
+## Structure
 
 The header and sound info parts are (mostly) identical to the previous version but the actual instrument part is different which uses the same format as Kontkt 5.
 
@@ -220,27 +184,13 @@ The header and sound info parts are (mostly) identical to the previous version b
 | V       | Preset       | The preset data same as [Kontakt 5 Instrument Preset](./Kontakt5-Preset.md) but compressed with FastLZ (see https://ariya.github.io/FastLZ/).|
 | V       | Soundinfo    | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database.                  |
 
-## Kontakt 5, 6 and 7
+# Kontakt 5, 6 and 7
 
 Starting with Kontakt 5, Native Instruments introduced a container format which is used by all current plugins.
 The specification of the generic container format is here: [NI Container Format](./NI-Container.md)
 
 The actual Kontakt Instrument preset is stored in the *Data* section of a *Preset Data Chunk*.
 The format is documented here: [Kontakt 5 Instrument Preset](./Kontakt5-Preset.md)
-
-## Battery 3
-
-**TODO**
-
-## NKX Format
-
-**TODO**
-
-## NCW Format
-
-NCW File Signature can be 0x01A89ED631010000 or 0x01A89ED630010000.
-The last DWORD value is different which likely indicates different compression algorithms.
-NCW is ADPCM (-> more correctly DPCM since there is no adaptive or prediction algorithm like A-law or mu-law used.That's why it's loseless).
 
 ## Lookup tables
 
