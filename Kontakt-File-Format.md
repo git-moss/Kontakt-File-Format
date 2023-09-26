@@ -1,17 +1,18 @@
 # Kontakt 1 - NKI Format
 
-| # Bytes | Name        | Description                                                         |
-| :-------|:------------|:--------------------------------------------------------------------|
-| 4       | File ID     | 5E E5 6E B3 - Identifies the Kontakt 1 file format.                 |
-| 4       | ZLIB Start  | The offset (number of bytes) in the file where the ZLIB starts. Always 0x24. |
-| 2       | **TODO**    | **TODO** always "50 00"                                             |
-| 1       | **TODO**    | **TODO** valid in the range of 00 - 03                              |
-| 9       | **TODO**    | **TODO** always 00                                                  |
-| 4       | **TODO**    | **TODO** always "01 00 00 00"                                       |
-| 4       | Timestamp   | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (BE) is 1298402059 is "22.02.2011 20:14:19" |
-| 4       | Sample size | The sum of the size of all used samples (only the content data block of a WAV without any headers). |
-| 4       | **TODO**    | **TODO** always 00                                                  |
-| V       | Inst. data  | XML document with all the data of the instrument, ZLIB encoded with Compression Level 2 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
+| # Bytes | Name           | Description                                                                          |
+| :-------|:---------------:--------------------------------------------------------------------------------------|
+| 4       | File ID        | 5E E5 6E B3 - Identifies the Kontakt 1 file format.                                  |
+| 4       | ZLIB Start     | The offset (number of bytes) in the file where the ZLIB starts. Always 0x24.         |
+| 2       | Header Version | **TODO** always "50 00"                                                              |
+| 2       | **TODO**       | **TODO** valid in the range of 00 - 03                                               |
+| 4       | **TODO**       | **TODO** always 00                                                                   |
+| 4       | **TODO**       | **TODO** always 00                                                                   |
+| 4       | **TODO**       | **TODO** always "01 00 00 00"                                                        |
+| 4       | Timestamp      | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (BE) is 1298402059 is "22.02.2011 20:14:19" |
+| 4       | Sample size    | The sum of the size of all used samples (only the content data block of a WAV without any headers). |
+| 4       | **TODO**       | **TODO** always 00                                                                   |
+| V       | Inst. data     | XML document with all the data of the instrument, ZLIB encoded with Compression Level 2 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
 
 # Kontakt 1.5 - NKI Format
 
@@ -24,33 +25,33 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 
 ## Structure
 
-| # Bytes | Name           | Description                                                                 |
-| :-------|:---------------|:-------------------------------------------------------------------------------------|
-| 4       | File ID        | 12 90 A8 7F (BE) / 7F A8 90 12 (LE) - Identifies the Kontakt 2 file format.          |
-| 4       | Compressed length | The length of the compressed data block (ZLIB or FastLZ for Kontakt 4).           |
-| 2       | Header Version | Kontakt 2: "00 01" (BE) / "01 00" (LE) - 4.2: "10 01 (BE)"                           |
-| 4       | Patch Version  | K2: "72 2A 01 3E" (BE) / "3E 01 2A 72" (LE) - 4.2: "1A 63 37 EA (BE)"                |
-| 2       | Patch Type     | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 - NKI: "01 00" (BE) / "00 01" (LE)          |
-| 4       | Version        | Version of Kontakt which created the file E.g. "02 01 00 02" (BE) is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
-| 4       | Block ID       | Type of the following file format, e.g. "Kon4".                                      |
-| 4       | Creation       | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (BE) is 1298402059 is "22.02.2011 20:14:19" |
-| 4       | **TODO**       | **TODO**                                                                             |
-| 2       | Num.Zones      | The number of zones.                                                                 |
-| 2       | Num.Groups     | The number of groups.                                                                |
-| 2       | Num.Inst.      | The number of instruments.                                                           |
-| 16      | **TODO**       | **TODO**                                                                             |
-| 4       | Icon           | The icon of the instrument ([list of icon IDs](./Icons.md)).                         |
-| 9       | Author         | The author of the instrument (ISO Latin Alphabet ISO_8859_1). Null terminated.       |
-| 2       | **TODO**       | **TODO** Found values 0, 3, 4                                                        |
-| 87      | Web Link       | A URL to the website of the creator (ISO Latin Alphabet ISO_8859_1). Null terminated.|
-| 2       | **TODO**       | **TODO**                                                                             |
-| 4       | **TODO**       | **TODO**                                                                             |
-| 4       | **TODO**       | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
-| 4       | Patchlevel     | Patchlevel of Kontakt version. One 32-bit value.                                     |
-| V       | Inst. data     | XML document with all the data of the instrument, ZLIB encoded with Compression Level 1 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
-| 12      | SI Header      | **TODO** AE E1 0E B0 01 01 0C 00 D9 00 00 00 (BE)                                    |
-| V       | Soundinfo      | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database.      |
-
+| # Bytes | Name              | Description                                                                 |
+| :-------|:------------------|:-------------------------------------------------------------------------------------|
+| 4       | File ID           | 12 90 A8 7F (BE) / 7F A8 90 12 (LE) - Identifies the Kontakt 2 file format.          |
+| 4       | Compressed length | The length of the compressed data block (ZLIB or FastLZ for Kontakt 4).              |
+| 2       | Header Version    | Kontakt 2: 0x100 / 4.2: 0x101                                                        |
+| 4       | Patch Version     | K2: "72 2A 01 3E" (BE) / "3E 01 2A 72" (LE) - 4.2: "1A 63 37 EA (BE)"                |
+| 2       | Patch Type        | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 - NKI: "01 00" (BE) / "00 01" (LE)          |
+| 4       | Version           | Version of Kontakt which created the file E.g. "02 01 00 02" (BE) is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
+| 4       | Block ID          | Type of the following file format, e.g. "Kon4".                                      |
+| 4       | Creation          | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (BE) is 1298402059 is "22.02.2011 20:14:19" |
+| 4       | **TODO**          | **TODO**                                                                             |
+| 2       | Num.Zones         | The number of zones.                                                                 |
+| 2       | Num.Groups        | The number of groups.                                                                |
+| 2       | Num.Inst.         | The number of instruments.                                                           |
+| 16      | **TODO**          | **TODO**                                                                             |
+| 4       | Icon              | The icon of the instrument ([list of icon IDs](./Icons.md)).                         |
+| 9       | Author            | The author of the instrument (ISO Latin Alphabet ISO_8859_1). Null terminated.       |
+| 2       | **TODO**          | **TODO** Found values 0, 3, 4                                                        |
+| 87      | Web Link          | A URL to the website of the creator (ISO Latin Alphabet ISO_8859_1). Null terminated.|
+| 2       | **TODO**          | **TODO**                                                                             |
+| 4       | **TODO**          | **TODO**                                                                             |
+| 4       | **TODO**          | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
+| 4       | Patchlevel        | Patchlevel of Kontakt version. One 32-bit value.                                     |
+| V       | Inst. data        | XML document with all the data of the instrument, ZLIB encoded with Compression Level 1 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
+| 12      | SI Header         | **TODO** AE E1 0E B0 01 01 0C 00 D9 00 00 00 (BE)                                    |
+| V       | Soundinfo         | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database.      |
+   
 # Kontakt 2 - 4.1.x - NKI Monolith Format
 
 The header up to the ZLIB section is identical to the non-monolith version. 
@@ -64,7 +65,9 @@ A Dictionary block looks like this:
 
 | # Bytes | Name           | Description                                                                          |
 | :-------|:---------------|:-------------------------------------------------------------------------------------|
-| 14      | Main header    | Seems to be always "54 AC 70 5E  10 01 00 00  00 00 FF 00  00 00"                    |
+| 4       | Magic ID       | 54 AC 70 5E                                                                          |
+| 2       | Header Version | 10 01                                                                                |
+| 8       | **TODO**       | 00 00 00 00  FF 00 00 00                                                             |
 | 4       | # sub-blocks   | The number of Dictionary Items contained in the block.                               |
 | 4       | Padding        | **TBC**                                                                              |
 
@@ -92,7 +95,7 @@ The known Dictionary Items are:
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
-| 2       | Length    |                                                                                       |
+| 2       | Length    | Length of the item.                                                                   |
 | 4       | Pointer   | Points to the Dictionary block which contains the sample information (one IR-Sample reference and N-Sample references).|
 | 2       | Type      | 01 00                                                                                 |
 | 16      |	Content   | "Samples" tag. Text stored as UTF-16 null terminated.                                 |
@@ -101,7 +104,7 @@ The known Dictionary Items are:
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
-| 2       | Length    |                                                                                       |
+| 2       | Length    | Length of the item.                                                                   |
 | 4       | Pointer   | Beginning of NKI Instrument block.                                                    |
 | 2       | Type      | 03 00                                                                                 |
 | V       |	Content   | The NKI-Filename as UTF-16 Null-terminated.                                           |
@@ -110,7 +113,7 @@ The known Dictionary Items are:
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
-| 2       | Length    |                                                                                       |
+| 2       | Length    | Length of the item.                                                                   |
 | 4       | Pointer   | Points to the Dictionary block which contains the IR-Sample information.              |
 | 2       | Type      | 01 00                                                                                 |
 | 16      |	Content   | "IR Samples" tag. Text stored as UTF-16 null terminated.                              |
@@ -119,7 +122,7 @@ The known Dictionary Items are:
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
-| 2       | Length    |                                                                                       |
+| 2       | Length    | Length of the item.                                                                   |
 | 4       | Pointer   | Points to the Sample block which contains the Sample Data. **TBC**                    |
 | 2       | Type      | 02 00                                                                                 |
 | V       |	Content   | The original filename of the sample. Text stored as UTF-16 null terminated.           |
@@ -128,7 +131,7 @@ The known Dictionary Items are:
 
 | # Bytes | Name           | Description                                                                      |
 | :-------|:---------------|:---------------------------------------------------------------------------------|
-| 2       | Length         |                                                                                  |
+| 2       | Length         | Length of the item.                                                              |
 | 4       | Pointer        | Points to the Dictionary block which contains the Wallpaper information.         |
 | 2       | Type           | 01 00                                                                            |
 | 20      |	Content        | "Wallpaper" tag. Text stored as UTF-16 null terminated.                          |
@@ -137,7 +140,7 @@ The known Dictionary Items are:
 
 | # Bytes | Name           | Description                                                                      |
 | :-------|:---------------|:---------------------------------------------------------------------------------|
-| 2       | Length         |                                                                                  |
+| 2       | Length         | Length of the item.                                                              |
 | 4       | Pointer        | Points to the location where the image starts in the file.                       |
 | 2       | Type           | 04 00                                                                            |
 | V       |	Content        | The original filename of the wallpaper. Text stored as UTF-16 null terminated.   |
@@ -161,10 +164,12 @@ The known Dictionary Items are:
 
 The file ends with the NKI section.
 
-| # Bytes | Name           | Description                                                                           |
-| :-------|:---------------|:--------------------------------------------------------------------------------------|
-| 27      | Header         | Always "3C E6 16 49  10 01 00 00  00 00 FF 00  00 00 01 00  00 00 00 22  0D 00 00 00  00 00 00" |
-| V       | NKI            | The full data of a non-monolith NKI file. Even repeats the metadata.                  |
+| # Bytes | Name           | Description                                                                       |
+| :-------|:---------------|:----------------------------------------------------------------------------------|
+| 4       | Magic ID       | 3C E6 16 49                                                                       |
+| 2       | Header Version | 10 01                                                                             |
+| 21      | **TODO**       | Always "00 00  00 00 FF 00  00 00 01 00  00 00 00 22  0D 00 00 00  00 00 00"      |
+| V       | NKI            | The full data of a non-monolith NKI file. Even repeats the metadata.              |
 
 # Kontakt 4.2.x - NKI Format
 
