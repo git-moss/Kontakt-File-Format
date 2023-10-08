@@ -57,118 +57,128 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 The header up to the ZLIB section is identical to the non-monolith version. 
 Instead of the ZLIB section the monolith sample information starts.
 
-It consists of several Dictionary blocks. Each Dictionary block contains several Items.
-After that, there are sections with the Sample, IR-Sample and Wallpaper image data. The file 
-ends with the normal NKI content (even replicting the metadata).
+It starts with several [Directory Blocks](#directory-block), which contain several [Entries](#directory-entry).
+After that, there are sections with [IR-Samples](#ir-samples-reference) (optional), [Samples](#sample), and [Wallpaper](#wallpaper) image (optional) data.
+Then there is another Directory Header follow by the normal NKI content (even replicting the metadata).
 
-A Dictionary block looks like this:
+## Directory Block
 
-| # Bytes | Name           | Description                                                                          |
-| :-------|:---------------|:-------------------------------------------------------------------------------------|
-| 4       | Magic ID       | 54 AC 70 5E                                                                          |
-| 2       | Header Version | 10 01                                                                                |
-| 8       | **TODO**       | 00 00 00 00  FF 00 00 00                                                             |
-| 4       | # sub-blocks   | The number of Dictionary Items contained in the block.                               |
-| 4       | Padding        | **TBC**                                                                              |
+| # Bytes | Name            | Description                                                                          |
+| :-------|:----------------|:-------------------------------------------------------------------------------------|
+| 4       | Magic ID        | 54 AC 70 5E                                                                          |
+| 2       | Version         | 10 01 - The version of the header (e.g. 1.10).                                       |
+| 4       | **TODO**        | 00 00 00 00                                                                          |
+| 4       | **TODO**        | FF 00 00 00                                                                          |
+| 4       | Number of items | The number of Directory Entries contained in the block.                               |
+| 4       | Padding         | 00 00 00 00                                                                          |
 
-A Dictionary Item looks like this:
+## Directory Entry
 
 | # Bytes | Name      | Description                                                                               |
 | :-------|:----------|:------------------------------------------------------------------------------------------|
-| 2       | Length    | Length of the Item (incl. these 2 bytes).                                                 |
+| 2       | Length    | Length of the Entry (incl. these 2 bytes).                                                 |
 | 4       | Pointer   | A reference pointer. Byte position in the file where the related data is stored.          |
-| 2       | Type      | Type of the reference.                                                                    |
-| V       |	Content   | The actual content of the Item.                                                           |
+| 2       | Type      | [Type](#Directory-item-reference-types) of the reference.                                |
+| V       |	Content   | The content of the Item. Text stored as UTF-16 null terminated.                           |
 
-Known types of Dictionary Item references:
+## Directory Entry Types
 
-| #     | Description                        |
-| :-----|:-----------------------------------|
-| 01 00 | Reference to another Dictionary.   |
-| 02 00 | Reference to a sample.             |
-| 03 00 | Reference to the NKI start.        |
-| 04 00 | Reference to a wallpaper image.    |
+| #     | Description                                                           |
+| :-----|:----------------------------------------------------------------------|
+| 00 00 | Marks the last (empty) item.                                          |
+| 01 00 | [Reference to another Directory Block](#Directory-block-reference).   |
+| 02 00 | [Reference to a (IR-)sample](#ir-sample-reference).                   |
+| 03 00 | [Reference to the NKI](#nki-reference).                               |
+| 04 00 | [Reference to a wallpaper image](#wallpaper-reference).               |
 
-The known Dictionary Items are:
-
-### Samples Reference
+### Directory Block Reference
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
 | 2       | Length    | Length of the item.                                                                   |
-| 4       | Pointer   | Points to the Dictionary block which contains the sample information (one IR-Sample reference and N-Sample references).|
+| 4       | Pointer   | Points to another [Directory Block](#directory-block).                                |
 | 2       | Type      | 01 00                                                                                 |
-| 16      |	Content   | "Samples" tag. Text stored as UTF-16 null terminated.                                 |
+| 16      |	Content   | "Samples", "IR Samples" or "Wallpaper" tag.                                           |
 
-### NKI-Filename
-
-| # Bytes | Name      | Description                                                                           |
-| :-------|:----------|:--------------------------------------------------------------------------------------|
-| 2       | Length    | Length of the item.                                                                   |
-| 4       | Pointer   | Beginning of NKI Instrument block.                                                    |
-| 2       | Type      | 03 00                                                                                 |
-| V       |	Content   | The NKI-Filename as UTF-16 Null-terminated.                                           |
-
-### IR-Samples Reference
+### (IR-)Sample Reference
 
 | # Bytes | Name      | Description                                                                           |
 | :-------|:----------|:--------------------------------------------------------------------------------------|
 | 2       | Length    | Length of the item.                                                                   |
-| 4       | Pointer   | Points to the Dictionary block which contains the IR-Sample information.              |
-| 2       | Type      | 01 00                                                                                 |
-| 16      |	Content   | "IR Samples" tag. Text stored as UTF-16 null terminated.                              |
-
-### Sample
-
-| # Bytes | Name      | Description                                                                           |
-| :-------|:----------|:--------------------------------------------------------------------------------------|
-| 2       | Length    | Length of the item.                                                                   |
-| 4       | Pointer   | Points to the Sample block which contains the Sample Data. **TBC**                    |
+| 4       | **TODO**  | **TODO** - it does not a point to the file and it is not a timestamp... Checksum?     |
 | 2       | Type      | 02 00                                                                                 |
-| V       |	Content   | The original filename of the sample. Text stored as UTF-16 null terminated.           |
+| V       |	Content   | The original filename of the sample.                                                  |
+
+### NKI Reference
+
+| # Bytes | Name      | Description                                                                           |
+| :-------|:----------|:--------------------------------------------------------------------------------------|
+| 2       | Length    | Length of the item.                                                                   |
+| 4       | Pointer   | Points to the start of the [NKI Data](#nki-data).                                     |
+| 2       | Type      | 03 00                                                                                 |
+| V       |	Content   | The NKI-Filename.                                                                     |
 
 ### Wallpaper Reference
 
-| # Bytes | Name           | Description                                                                      |
-| :-------|:---------------|:---------------------------------------------------------------------------------|
-| 2       | Length         | Length of the item.                                                              |
-| 4       | Pointer        | Points to the Dictionary block which contains the Wallpaper information.         |
-| 2       | Type           | 01 00                                                                            |
-| 20      |	Content        | "Wallpaper" tag. Text stored as UTF-16 null terminated.                          |
+| # Bytes | Name      | Description                                                                          |
+| :-------|:----------|:-------------------------------------------------------------------------------------|
+| 2       | Length    | Length of the item.                                                                  |
+| 4       | Pointer   | Points to the location where the [wallpaper image](#wallpaper-image-data) starts in the file. |
+| 2       | Type      | 04 00                                                                                |
+| V       |	Content   | The original filename of the wallpaper.                                              |
 
-### Wallpaper
-
-| # Bytes | Name           | Description                                                                      |
-| :-------|:---------------|:---------------------------------------------------------------------------------|
-| 2       | Length         | Length of the item.                                                              |
-| 4       | Pointer        | Points to the location where the image starts in the file.                       |
-| 2       | Type           | 04 00                                                                            |
-| V       |	Content        | The original filename of the wallpaper. Text stored as UTF-16 null terminated.   |
-
-## Sample/IR-Sample Sections
+## (IR-)Sample Data
 
 | # Bytes | Name           | Description                                                                      |
 | :-------|:---------------|:---------------------------------------------------------------------------------|
-| 31      | WAV Data header| Always "0A F8 CC 16  10 01 00 00  00 00 FF 00  00 00 01 00  00 00 00"            |
-| 4       | Filelength     | Length of the sample file.                                                       |
-| 4       | **TODO**       | **TBC** Offset to next WAV?                                                      |
+| 4       | Magic ID       | 0x16CCF80A                                                                       |
+| 2       | Version        | 10 01 - the version of the header.                                               |
+| 4       | **TODO**       | 00 00 00 00                                                                      |
+| 4       | **TODO**       | FF 00 00 00                                                                      |
+| 4       | **TODO**       | 01 00 00 00                                                                      |
+| 1       | **TODO**       | 00                                                                               |
+| 8       | File size      | The number of bytes of the sample file to follow.                                |
+| 4       | Padding        | 00 00 00 00                                                                      |
 | V       | Sample Data    | The raw bytes from the original sample file.                                     |
 
-## Wallpaper Section
+## Additional Sample Data ?!
 
 | # Bytes | Name           | Description                                                                      |
 | :-------|:---------------|:---------------------------------------------------------------------------------|
-| V       | Image Data     | Maybe here is a header before it, too.   **TODO**                                |
+| 4       | Magic ID       | 0x0040179F                                                                       |
+| 2       | Version        | 10 01 - the version of the header.                                               |
+| 2       | **TODO**       | 00 00                                                                            |
+| 4       | **TODO**       | 10 00 00 00                                                                      |
+| 4       | **TODO**       | 02 00 00 00                                                                      |
+| 1       | **TODO**       | 65                                                                               |
+| 4       | **TODO**       | 06 00 00 00                                                                      |
+| 1       | **TODO**       | 44                                                                               |
+| V       | Data           | **TODO**                                                                         |
 
-## NKI Section
+## Wallpaper Image Data
+
+| # Bytes | Name           | Description                                                                      |
+| :-------|:---------------|:---------------------------------------------------------------------------------|
+| 4       | Magic ID       | 0x2AE905FA                                                                       |
+| 2       | Version        | 10 01 - the version of the header.                                               |
+| 4       | **TODO**       | 00 00 00 00                                                                      |
+| 4       | **TODO**       | FF 00 00 00                                                                      |
+| 8       | File size      | The number of bytes of the image file to follow.                                 |
+| V       | Image Data     | ...                                                                              |
+
+## NKI Data
 
 The file ends with the NKI section.
 
 | # Bytes | Name           | Description                                                                       |
 | :-------|:---------------|:----------------------------------------------------------------------------------|
-| 4       | Magic ID       | 3C E6 16 49                                                                       |
+| 4       | Magic ID       | 0x4916E63C                                                                        |
 | 2       | Header Version | 10 01                                                                             |
-| 21      | **TODO**       | Always "00 00  00 00 FF 00  00 00 01 00  00 00 00 22  0D 00 00 00  00 00 00"      |
+| 4       | **TODO**       | 00 00 00 00                                                                       |
+| 4       | **TODO**       | FF 00 00 00                                                                       |
+| 4       | **TODO**       | 01 00 00 00                                                                       |
+| 1       | **TODO**       | 00                                                                                |
+| 8       | File size      | The number of bytes of the NKI file to follow.                                    |
 | V       | NKI            | The full data of a non-monolith NKI file. Even repeats the metadata.              |
 
 # Kontakt 4.2.x - NKI Format
