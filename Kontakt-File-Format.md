@@ -1,7 +1,7 @@
 # Kontakt 1 - NKI Format
 
 | # Bytes | Name           | Description                                                                          |
-| :-------|:---------------:--------------------------------------------------------------------------------------|
+| :-------|:---------------|:-------------------------------------------------------------------------------------|
 | 4       | File ID        | 5E E5 6E B3 - Identifies the Kontakt 1 file format.                                  |
 | 4       | ZLIB Start     | The offset (number of bytes) in the file where the ZLIB starts. Always 0x24.         |
 | 2       | Header Version | **TODO** always "50 00"                                                              |
