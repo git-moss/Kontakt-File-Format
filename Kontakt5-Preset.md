@@ -323,14 +323,19 @@ This block is identical to the special files block but with different file/folde
 | # Bytes | Name               | Description                                                               |
 | :-------|:-------------------|:--------------------------------------------------------------------------|
 | 4       | Segment Count      | The number of segments of the path.                                       |
-| V       | Segment            | For each segment follows one [Segment](#segment).                |
+| V       | Segment            | For each segment follows one [Segment](#segment).                         |
 
 ### Segment
 
-| # Bytes | Name               | Description                                                               |
-| :-------|:-------------------|:--------------------------------------------------------------------------|
-| 1       | Segment Type       | 2 = a part of the path (normally a sub-folder name), 4 = the file name.   |
-| V       | Segment Text       | Either a path or the file name (UTF-16LE with 4 byte length field).       |
+There are different types of segments. All of them start with 1 byte of the segment type. The type is followed by the path information, mostly a text.
+
+| Segment Type | # Bytes | Description                                                   |
+| :------------|:--------|:--------------------------------------------------------------|
+| 0            | 2       | A drive letter as ASCII                                       |
+| 1            | V       | A drive letter as UTF-16LE with 4 byte length field.          |
+| 2            | V       | A folder of the path as UTF-16LE with 4 byte length field.    |
+| 3            | 0       | Redirects to the parent folder: '..'.                         |
+| 4            | V       | A file name as UTF-16LE with 4 byte length field.             |
 
 ### Timestamp Block
 

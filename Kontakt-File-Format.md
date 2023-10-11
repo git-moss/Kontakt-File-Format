@@ -39,7 +39,14 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 2       | Num.Zones         | The number of zones.                                                                 |
 | 2       | Num.Groups        | The number of groups.                                                                |
 | 2       | Num.Inst.         | The number of instruments.                                                           |
-| 16      | **TODO**          | **TODO**                                                                             |
+| 2       | **TODO**          | **TODO**                                                                             |
+| 2       | **TODO**          | **TODO**                                                                             |
+| 4       | Is Monolith?      | 1 if it is a monolith.                                                               |
+| 1       | **TODO**          | **TODO**                                                                             |
+| 1       | **TODO**          | **TODO**                                                                             |
+| 1       | **TODO**          | **TODO**                                                                             |
+| 4       | **TODO**          | **TODO**                                                                             |
+| 1       | **TODO**          | **TODO**                                                                             |
 | 4       | Icon              | The icon of the instrument ([list of icon IDs](./Icons.md)).                         |
 | 9       | Author            | The author of the instrument (ISO Latin Alphabet ISO_8859_1). Null terminated.       |
 | 2       | **TODO**          | **TODO** Found values 0, 3, 4                                                        |
@@ -217,5 +224,5 @@ Known block IDs are:
 |:-------------------------------|:-------------------------------------|
 | Kon2                           | Kontakt 2                            |
 | Kon3                           | Kontakt 3                            |
-| Kon4		                       | Kontakt 4                            |
+| Kon4		                     | Kontakt 4                            |
 | AkPi                           | Akustik Piano from Kontakt 3 Library |
