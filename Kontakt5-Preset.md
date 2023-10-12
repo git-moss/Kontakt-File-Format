@@ -95,7 +95,7 @@ The column *Data Section* in the [Preset Chunk IDs](#preset-chunk-ids) table com
 | 0x25    | BParFX                |                                                 | Flat                 |
 | 0x26    | BDyxMorphGroup        |                                                 |                      |
 | 0x27    | BDyxMorphMap          |                                                 |                      |
-| 0x28    | Program               | A Kontakt instrument program.                   | Structured           |
+| 0x28    | [Program](#preset-chunk---program-0x28)| A Kontakt instrument program.  | Structured           |
 | 0x29    | BProgramContainer     |                                                 |                      |
 | 0x2a    | BSample               |                                                 |                      |
 | 0x2b    | VoiceGroup            |                                                 |                      |
@@ -106,16 +106,16 @@ The column *Data Section* in the [Preset Chunk IDs](#preset-chunk-ids) table com
 | 0x30    | PresetImpl            |                                                 |                      |
 | 0x32    | VoiceGroups           |                                                 | Structured           |
 | 0x33    | GroupList             |                                                 | List A               |
-| 0x34    | ZoneList              | A list with all sample zones.                   | List B               |
+| 0x34    | [ZoneList](#preset-chunk---zone-list-0x34)| A list with all sample zones.| List B              |
 | 0x35    | PrivateRawObject      |                                                 |                      |
 | 0x36    | ProgramList           |                                                 |                      |
 | 0x37    | SlotList              |                                                 |                      |
 | 0x38    | StarCritList          |                                                 |                      |
-| 0x39    | LoopArray             | A loop for a zone.                              | Flat                 |
+| 0x39    | [LoopArray](#preset-chunk---loop-array-0x39) | A loop for a zone.       | Flat                 |
 | 0x3a    | BParameterArraySer8   |                                                 | Structured           |
 | 0x3b    | BParameterArraySer16  |                                                 | Flat                 |
 | 0x3c    | BParameterArraySer32  |                                                 |                      |
-| 0x3d    | FileNameList          |                                                 | Flat                 |
+| 0x3d    | [FileNameList](#preset-chunk---filename-list-0x3d--filename-list-ex-0x4b)| The indexed file list. | Flat              |
 | 0x3e    | BOutputConfiguration  |                                                 |                      |
 | 0x3f    | BParEnv_AHDSR         |                                                 |                      |
 | 0x40    | BParEnv_FM7           |                                                 |                      |
@@ -129,7 +129,7 @@ The column *Data Section* in the [Preset Chunk IDs](#preset-chunk-ids) table com
 | 0x48    | PrivateRawObject      |                                                 |                      |
 | 0x49    | PrivateRawObject      |                                                 |                      |
 | 0x4a    | BParGroupDynamics     |                                                 |                      |
-| 0x4b    | FileNameListEx        |                                                 | Flat                 |
+| 0x4b    | [FileNameListEx](#preset-chunk---filename-list-0x3d--filename-list-ex-0x4b)| The newer indexed file list. | Flat            |
 | 0x4c    | BParFXFBComp          |                                                 |                      |
 | 0x4d    | BParFXJump            |                                                 |                      |
 | 0x4e    | QuickBrowseData       |                                                 | Structured           |
@@ -281,42 +281,14 @@ This is similar to 0x3D but with more options and parameters.
 | # Bytes | Name               | Description                                                                         |
 | :-------|:-------------------|:------------------------------------------------------------------------------------|
 | 2       | Version            | The version of the Ex data. Always 2.                                               |
-| V       | Special Files      | See [Special Files Block](#special-files-block).                                    |
-| 4       | File Count         | The number of sample files in the list.                                             |
-| V       | Segments           | For each file there is one [Segment Block](#segment-block).                         |
+| 4       | # Special Files    | The number of special files/paths in the list.                                      |
+| V       | Special Files      | For each file there is one [Segment Block](#segment-block). E.g. Absolute (monolith) source path, resource file (NKR), resource folder. |
+| 4       | # Sample Files     | The number of sample files in the list.                                             |
+| V       | Sample Files       | For each file there is one [Segment Block](#segment-block).                         |
 | V       | File Timestamps    | For each file there is one [Timestamp Block](#timestamp-block).                     |
 | V       | **TODO**           | There is 1 integer for each file. The file at the last index is set to 0, 1, 2 or 3. All others seem to be always 0.|
-| V       | Other Files        | See [Other Files Block](#other-files-block).                                        |
-
-### Special Files
-
-A number of additional files like resource files or folder information:
-
-| # Bytes | Name               | Description                                                                         |
-| :-------|:-------------------|:------------------------------------------------------------------------------------|
-| 4       | Type (o)           | The type ID.                                                                        |
-| V       | File/folder(s)     | One or more [Segment Blocks](#segment-block) containing a file or a folder.         |
-
-The following table shows the known Types as well as how many files/folders are expected and there might be more special file sections to follow:
-
-| # Type  | Last entry?  | # of file/folder(s) | File/Folder(s)                                                |
-| :-------|:-------------|:--------------------|:--------------------------------------------------------------|
-| 0       | Yes          | 1                   | Absolute source path.                                         |
-| 1       | Yes          | 1                   | Absolute monolith source path.                                |
-| 2       | Yes          | 2                   | Resource file (*.nkr), resource folder.                       |
-| 3       | No           | 1                   | Resource file (*.nkr).                                        |
-
-### Other Files
-
-This block is identical to the special files block but with different file/folder Types:
-
-| # Type  | Last entry?  | # of file/folder(s) | File/Folder(s)                                                |
-| :-------|:-------------|:--------------------|:--------------------------------------------------------------|
-| 0       | Yes          | 0                   | -                                                             |
-| 1       | Yes          | 0                   | -                                                             |
-| 2       | No           | 1                   | NKI filename.                                                 |
-| 3       | No           | 2                   | NKI filename, wallpaper file name.                            |
-| 7       | No           | 1                   | Impulse response file name.                                   |
+| 4       | # Other Files      | The number of other files in the list.                                              |
+| V       | Other Files        | For each file there is one [Segment Block](#segment-block). E.g. NKI filename, wallpaper file name, impulse response file name.|
 
 ### Segment Block
 
@@ -335,7 +307,12 @@ There are different types of segments. All of them start with 1 byte of the segm
 | 1            | V       | A drive letter as UTF-16LE with 4 byte length field.          |
 | 2            | V       | A folder of the path as UTF-16LE with 4 byte length field.    |
 | 3            | 0       | Redirects to the parent folder: '..'.                         |
-| 4            | V       | A file name as UTF-16LE with 4 byte length field.             |
+| 4            | V       | A sample file name as UTF-16LE with 4 byte length field.      |
+| 5            | **TODO**| **TODO** No example so far.                                   |
+| 6            | 0       | **TODO** A top level indicator. Maybe '.'?!                   |
+| 7            | **TODO**| **TODO** No example so far.                                   |
+| 8            | V       | A NKX file name as UTF-16LE with 4 byte length field.         |
+| 9            | V       | A NKM file name as UTF-16LE with 4 byte length field.         |
 
 ### Timestamp Block
 

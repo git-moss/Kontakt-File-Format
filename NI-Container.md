@@ -46,11 +46,14 @@ a terminal chunk.
 
 ## Known Chunk Types
 
+Three kinds of NISound documents have been discovered so far: AppSpecific, [Preset](#preset-item-chunk) and [BNI Sound Preset](#bni-sound-preset-chunk). Kontakt Multi (NKM) and some Battery presets use AppSpecific, Kontakt Patches and Battery Instruments use BNIPreset, and everything else uses Preset.
+AppSpecific contains a [BNI Sound Preset](#bni-sound-preset-chunk). BNIPreset wraps [Preset](#preset-item-chunk) but also has children for the header and SoundInfoItem which Preset does not.
+
 | # ID    | Description                                                                           |
 | :-------|:--------------------------------------------------------------------------------------|
 | 1       | [Terminator](#terminator-chunk). The last chunk in a chunk stack.                     |
-| 3       | BNI Sound Preset (only used in NIK4 domain)                                           |
-| 4       | BNI Sound Header (only used in NIK4 domain)                                           |
+| 3       | [BNI Sound Preset](#bni-sound-preset-chunk). Contains a preset.                       |
+| 4       | BNI Sound Header                                                                      |
 | 100     | Bank                                                                                  |
 | 101     | Metadata information about the [Authoring Application](#authoring-application-chunk). |
 | 102     | Bank Container                                                                        |
@@ -58,7 +61,7 @@ a terminal chunk.
 | 104     | Binary Chunk Item                                                                     |
 | 106     | [Authorization](#authorization-chunk).                                                |
 | 108     | [Soundinfo](#soundinfo-chunk). Some metadata about the 'sound'.                       |
-| 109     | [Preset Chunk Item](#preset-chunk-item) contains the actual preset data.              |
+| 109     | [Preset](#preset-item-chunk) contains the actual preset data.                         |
 | 110     | External File Reference                                                               |
 | 111     | Resources                                                                             |
 | 112     | Audio Sample Item                                                                     |
@@ -97,7 +100,14 @@ The following tables describe the additional data of the chunk types which are r
 | 4       | **TODO**      | **TODO**                                                                    |
 | V       | Serial        | The serial number of the sound (UTF-16LE with 4 byte length field).         |
 
-### Preset Chunk Item
+### BNI Sound Preset Chunk
+
+| # Bytes | Name          | Description                                                                 |
+| :-------|:--------------|:----------------------------------------------------------------------------|
+| 4       | Version       | The version of the format used by the specific chunk type.                  |
+| V       | **TODO**      | **TODO**                                                                    |
+
+### Preset Item Chunk
 
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
@@ -147,13 +157,13 @@ The following tables describe the additional data of the chunk types which are r
 
 ### Subtree Item Chunk
 
-| # Bytes | Name          | Description                                                                 |
-| :-------|:--------------|:----------------------------------------------------------------------------|
-| 4       | Version       | The version of the format used by the specific chunk type.                  |
-| 1       | Is Compressed | 1 if the item data is compressed otherwise 0.                               |
-| 4       | Size uncompr. | The size of the uncompressed item data.                                     |
-| 4       | Size compr.   | The size of the compressed item data. 0 if data is not compressed.          |
-| V       | Item Data     | The un-/compressed data. Compression uses [FastLZ](https://ariya.github.io/FastLZ/). The uncompressed data is another [Container Item](#container-item). |
+| # Bytes | Name            | Description                                                               |
+| :-------|:----------------|:--------------------------------------------------------------------------|
+| 4       | Version         | The version of the format used by the specific chunk type.                |
+| 1       | Is Compressed   | 1 if the item data is compressed otherwise 0.                             |
+| 4       | Size uncompr.   | The size of the uncompressed item data.                                   |
+| 4       | Size compr. (o) | The size of the compressed item data. Missing if data is not compressed.  |
+| V       | Item Data       | The un-/compressed data. Compression uses [FastLZ](https://ariya.github.io/FastLZ/). The uncompressed data is another [Container Item](#container-item). |
 
 ### Terminator Chunk
 
