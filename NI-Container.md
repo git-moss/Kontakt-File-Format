@@ -95,10 +95,13 @@ The following tables describe the additional data of the chunk types which are r
 | # Bytes | Name          | Description                                                                 |
 | :-------|:--------------|:----------------------------------------------------------------------------|
 | 4       | Version       | The version of the format used by the specific chunk type.                  |
-| 4       | **TODO**      | **TODO**                                                                    |
-| 4       | **TODO**      | **TODO**                                                                    |
-| 4       | **TODO**      | **TODO**                                                                    |
-| V       | Serial        | The serial number of the sound (UTF-16LE with 4 byte length field).         |
+| 4       | Has PID       | 1 if there is a authorization configuration following. If 2, no more data.  |
+| 4 (o)   | **TODO**      | **TODO** Number of license blocks to follow?!                               |
+| 4 (o)   | # PIDs        | The number of PIDs to follow.                                               |
+| V (o)   | Serial PIDs   | The serial numbers of the sound (UTF-16LE with 4 byte length field).        |
+| 4 (o)   | **TODO**      | **TODO**                                                                    |
+| 4 (o)   | Level         | **TODO**                                                                    |
+| 4 (o)   | Checksum      | **TODO**                                                                    |
 
 ### BNI Sound Preset Chunk
 
