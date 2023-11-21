@@ -253,7 +253,8 @@ This is the *Block 2 Data* of a *Zone List*. This structure is slightly differen
 | 4       |         | Sample Rate        | The sample rate in Hertz, e.g. 44100                                      |
 | 1       |         | Number of Channels | The number of audio channels, e.g. 2 for a stereo file.                   |
 | 4       |         | Number of Frames   | The number of frames (number of samples of 1 channel).                    |
-| 4       | <= 0x93 | **TODO**           | **TODO**                           |
+| 4       |         | **TODO**           | **TODO**                                                                  |
+| 4       | <= 0x93 | **TODO**           | **TODO**                                                                  |
 | 4       |         | Root Note          | The root note at which the sample was recorded. Ignore if set to 0. Range of [0..127]. |
 | 4       |         | Tuning             | The tuning (float) **TODO**                                               |
 | 1       |         | **TODO**           | **TODO**                                                                  |

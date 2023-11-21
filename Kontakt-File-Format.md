@@ -39,21 +39,16 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 2       | Num.Zones         | The number of zones.                                                                 |
 | 2       | Num.Groups        | The number of groups.                                                                |
 | 2       | Num.Inst.         | The number of instruments.                                                           |
-| 2       | **TODO**          | **TODO**                                                                             |
-| 2       | **TODO**          | **TODO**                                                                             |
+| 4       | PCM Data Length   | The sum of the size of all used samples (only the content data block of a WAV without any headers). |
 | 4       | Is Monolith?      | 1 if it is a monolith.                                                               |
-| 1       | **TODO**          | **TODO**                                                                             |
-| 1       | **TODO**          | **TODO**                                                                             |
-| 1       | **TODO**          | **TODO**                                                                             |
+| 4       | Req. Kontakt Ver. | The minimum Kontakt version required to open this file.                              |
 | 4       | **TODO**          | **TODO**                                                                             |
-| 1       | **TODO**          | **TODO**                                                                             |
 | 4       | Icon              | The icon of the instrument ([list of icon IDs](./Icons.md)).                         |
 | 9       | Author            | The author of the instrument (ISO Latin Alphabet ISO_8859_1). Null terminated.       |
 | 2       | **TODO**          | **TODO** Found values 0, 3, 4                                                        |
 | 87      | Web Link          | A URL to the website of the creator (ISO Latin Alphabet ISO_8859_1). Null terminated.|
-| 2       | **TODO**          | **TODO**                                                                             |
-| 4       | **TODO**          | **TODO**                                                                             |
-| 4       | **TODO**          | **TODO**   Checksum - but which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
+| 6       | **TODO**          | **TODO**- Padding?                                                                   |
+| 4       | Checksum          | **TODO** MD5 checksum of the decompressed chunk data?! Which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
 | 4       | Patchlevel        | Patchlevel of Kontakt version. One 32-bit value.                                     |
 | V       | Inst. data        | XML document with all the data of the instrument, ZLIB encoded with Compression Level 1 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
 | 12      | SI Header         | **TODO** AE E1 0E B0 01 01 0C 00 D9 00 00 00 (BE)                                    |
@@ -194,17 +189,16 @@ The file ends with the NKI section.
 
 The header and sound info parts are (mostly) identical to the previous version but the actual instrument part is different which uses the same format as Kontkt 5.
 
-| # Bytes | Name         | Description                                                                                      |
-| :-------|:-------------|:-------------------------------------------------------------------------------------------------|
-| ...     | as 4.1       | Identical to 4.1 structure up to and incl. the 7 bytes after the website info.                   |
-| 12      | **TODO**     | **TODO**                                                                                         |
-| 4       | **TODO**     | **TODO**   Checksum?!                                                                            |
-| 4       | Patchlevel   | Patchlevel of Kontakt version. One 32-bit value (big-endian).                                    |
-| 4       | **TODO**     | **TODO**                                                                                         |
-| 4       | **TODO**     | Length of the decompressed data.                                                                 |
-| 32      | **TODO**     | Padding?!                                                                                        |
-| V       | Preset       | The preset data same as [Kontakt 5 Instrument Preset](./Kontakt5-Preset.md) but compressed with FastLZ (see https://ariya.github.io/FastLZ/).|
-| V       | Soundinfo    | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database.                  |
+| # Bytes | Name           | Description                                                                                      |
+| :-------|:---------------|:-------------------------------------------------------------------------------------------------|
+| ...     | as Kontakt 2   | Identical to the Kontakt 2 header structure up to (excl.) the checksum.                          |
+| 16      | Checksum       | **TODO**                                                                                         |
+| 4       | Patchlevel     | Patchlevel of Kontakt version. One 32-bit value (big-endian).                                    |
+| 4       | CRC32          | **TBC** CRC32 checksum of the compressed binary data.                                            |
+| 4       | Length Decomp. | Length of the decompressed data.                                                                 |
+| 32      | **TODO**       | Padding?!                                                                                        |
+| V       | Preset         | The preset data same as [Kontakt 5 Instrument Preset](./Kontakt5-Preset.md) but compressed with FastLZ (see https://ariya.github.io/FastLZ/).|
+| V       | Soundinfo      | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database.                  |
 
 # Kontakt 5, 6 and 7
 
