@@ -30,28 +30,33 @@ The number of bytes for a value (given in the 1st column below) need then be rea
 | 4       | File ID           | 12 90 A8 7F (BE) / 7F A8 90 12 (LE) - Identifies the Kontakt 2 file format.          |
 | 4       | Compressed length | The length of the compressed data block (ZLIB or FastLZ for Kontakt 4).              |
 | 2       | Header Version    | Kontakt 2: 0x100 / 4.2: 0x101                                                        |
-| 4       | Patch Version     | K2: "72 2A 01 3E" (BE) / "3E 01 2A 72" (LE) - 4.2: "1A 63 37 EA (BE)"                |
-| 2       | Patch Type        | 0=nkm, 1=nki, 2=nkb, 3=nkp, 4=nkg, nkz=5 - NKI: "01 00" (BE) / "00 01" (LE)          |
+| 4       | Magic             | K2: "72 2A 01 3E" (BE) / "3E 01 2A 72" (LE) - 4.2: "1A 63 37 EA (BE)"                |
+| 2       | Patch Type        | 0=NKM, 1=NKI, 2=NKB, 3=NKP, 4=NKG, 5=NKZ - NKI: "01 00" (BE) / "00 01" (LE)          |
 | 4       | Version           | Version of Kontakt which created the file E.g. "02 01 00 02" (BE) is 2.0.1.002, FF as the first byte means that the PatchLevel is stored below. |
-| 4       | Block ID          | Type of the following file format, e.g. "Kon4".                                      |
+| 4       | Library ID        | An ID from the [library ID](#library-id) list.                                       |
 | 4       | Creation          | Unix-Timestamp UTC+1, e.g. "0B 0B 64 4D" (BE) is 1298402059 is "22.02.2011 20:14:19" |
 | 4       | **TODO**          | **TODO**                                                                             |
-| 2       | Num.Zones         | The number of zones.                                                                 |
-| 2       | Num.Groups        | The number of groups.                                                                |
-| 2       | Num.Inst.         | The number of instruments.                                                           |
-| 4       | PCM Data Length   | The sum of the size of all used samples (only the content data block of a WAV without any headers). |
+| 2       | Num. Zones        | The number of zones.                                                                 |
+| 2       | Num. Groups       | The number of groups.                                                                |
+| 2       | Num. Inst.        | The number of instruments.                                                           |
+| 4       | Sample Size Total | The sum of the size of all used samples (only the content data block of a WAV without any headers). |
 | 4       | Is Monolith?      | 1 if it is a monolith.                                                               |
 | 4       | Req. Kontakt Ver. | The minimum Kontakt version required to open this file.                              |
 | 4       | **TODO**          | **TODO**                                                                             |
 | 4       | Icon              | The icon of the instrument ([list of icon IDs](./Icons.md)).                         |
-| 9       | Author            | The author of the instrument (ISO Latin Alphabet ISO_8859_1). Null terminated.       |
-| 2       | **TODO**          | **TODO** Found values 0, 3, 4                                                        |
+| 9       | Author            | The author of the instrument (ISO Latin Alphabet ISO_8859_1).                        |
+| 1       | Category 1        | Index into the [category 1](#kontakt-2---category-1) list.                                                      |
+| 1       | Category 2        | Index into the [category 2](#kontakt-2---category-2) list.                                                      |
+| 1       | Category 3        | Index into the [category 3](#kontakt-2---category-3) list.                                                      |
 | 87      | Web Link          | A URL to the website of the creator (ISO Latin Alphabet ISO_8859_1). Null terminated.|
-| 6       | **TODO**          | **TODO**- Padding?                                                                   |
+| 2       | **TODO**          | **TODO** - Padding?                                                                  |
+| 4       | Flags             | **TODO** - seems to be some kind of flags in a bit array                             |
 | 4       | Checksum          | **TODO** MD5 checksum of the decompressed chunk data?! Which algo and which values? Seems to contain only data before the ZLIB section incl. the patch level. Start is also unclear, could be from the beginning or after (4, 8 or 16 bytes). |
 | 4       | Patchlevel        | Patchlevel of Kontakt version. One 32-bit value.                                     |
 | V       | Inst. data        | XML document with all the data of the instrument, ZLIB encoded with Compression Level 1 and CINFO=7. Each tag is on one line, indentation with 2 spaces. |
-| 12      | SI Header         | **TODO** AE E1 0E B0 01 01 0C 00 D9 00 00 00 (BE)                                    |
+| 4       | SI Header Magic   | 0xB00EE1AE (LE)                                                                      |
+| 4       | SI Header Version | 0x000C0101 (LE)                                                                      |
+| 4       | SI Size           | The size of the following sound info block.                                          |
 | V       | Soundinfo         | [Soundinfo](./Soundinfo.md) block containing info to be stored in the database.      |
    
 # Kontakt 2 - 4.1.x - NKI Monolith Format
@@ -192,9 +197,9 @@ The header and sound info parts are (mostly) identical to the previous version b
 | # Bytes | Name           | Description                                                                                      |
 | :-------|:---------------|:-------------------------------------------------------------------------------------------------|
 | ...     | as Kontakt 2   | Identical to the Kontakt 2 header structure up to (excl.) the checksum.                          |
-| 16      | Checksum       | **TODO**                                                                                         |
+| 16      | Checksum       | **TODO** MD5                                                                                     |
 | 4       | Patchlevel     | Patchlevel of Kontakt version. One 32-bit value (big-endian).                                    |
-| 4       | CRC32          | **TBC** CRC32 checksum of the compressed binary data.                                            |
+| 4       | CRC32          | CRC32 checksum of the compressed binary data.                                                    |
 | 4       | Length Decomp. | Length of the decompressed data.                                                                 |
 | 32      | **TODO**       | Padding?!                                                                                        |
 | V       | Preset         | The preset data same as [Kontakt 5 Instrument Preset](./Kontakt5-Preset.md) but compressed with FastLZ (see https://ariya.github.io/FastLZ/).|
@@ -210,13 +215,83 @@ The format is documented here: [Kontakt 5 Instrument Preset](./Kontakt5-Preset.m
 
 ## Lookup tables
 
-### Block ID
+### Library ID
 
-Known block IDs are:
+Known library IDs are:
 
-| Bytes (ASCII in little-endian) | Type                                 |
-|:-------------------------------|:-------------------------------------|
-| Kon2                           | Kontakt 2                            |
-| Kon3                           | Kontakt 3                            |
-| Kon4		                     | Kontakt 4                            |
-| AkPi                           | Akustik Piano from Kontakt 3 Library |
+| Bytes (ASCII in little-endian) | Type                                  |
+|:-------------------------------|:--------------------------------------|
+| Kon2                           | Kontakt 2                             |
+| Kon3                           | Kontakt 3                             |
+| Kon4		                     | Kontakt 4                             |
+| AkPi                           | Akustik Piano from Kontakt 3 Library  |
+| ElPi                           | Elektrik Piano from Kontakt 3 Library |
+
+### Kontakt 2 - Category 1
+
+| Index | Name          |
+|:------|:--------------|
+| 0     | Other         |
+| 1     | Piano         |
+| 2     | Guitar        |
+| 3     | Bass          |
+| 4     | Drums         |
+| 5     | Keyboard      |
+| 6     | Synthesizer   |
+| 7     | Strings       |
+| 8     | Brass         |
+| 9     | Organ         |
+| 10    | Vocal         |
+| 11    | Mallet        |
+| 12    | Athmosphere   |
+| 13    | Loop/Beat     |
+| 14    | Pad           |
+| 15    | Lead          |
+| 16    | Soundeffect   |
+| 17    | Woodwinds     |
+| 18    | Percussion    |
+
+### Kontakt 2 - Category 2
+
+| Index | Name          |
+|:------|:--------------|
+| 0     | Other			|
+| 1     | Acoustic      |
+| 2     | Electric      |
+| 3     | Solo          |
+| 4     | Ensemble      |
+| 5     | Analog        |
+| 6     | Digital       |
+| 7     | Synthetic     |
+| 8     | Mixed         |
+| 9     | Ethnic        |
+| 10    | Steel         |
+| 11    | Surround      |
+| 12    | Synced        |
+| 13    | KSP           |
+| 14    | Convoluted    |
+| 15    | Sequenced     |
+| 16    | Spacious      |
+
+### Kontakt 2 - Category 3
+
+| Index | Name          |
+|:------|:--------------|
+| 0     | Other			|
+| 1     | Noisy         |
+| 2     | Metallic      |
+| 3     | Clean         |
+| 4     | Distorted     |
+| 5     | Dark          |
+| 6     | Light         |
+| 7     | Groovy        |
+| 8     | Harmonic      |
+| 9     | Melodic       |
+| 10    | Full          |
+| 11    | Hard          |
+| 12    | Dissonant     |
+| 13    | Intense       |
+| 14    | Relaxed       |
+| 15    | Big           |
+| 16    | Small         |
+| 17    | Soft          |
